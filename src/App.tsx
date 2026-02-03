@@ -16,6 +16,7 @@ import {
   Chip,
   Snackbar,
   Alert,
+  createTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
@@ -24,15 +25,61 @@ import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 
 import GameCard from "./components/GameCard";
 import AddGameDialog from "./components/AddGameDialog";
+import { ThemeToggle } from "./components/ThemeToggle";
+import { ThemeContext } from "./theme/ThemeContext";
+
 import {
   getGames,
   createGame,
   deleteGame,
   Game,
 } from "./services/game.service";
-import { appTheme } from "./theme/theme";
 
 function App() {
+  const [mode, setMode] = useState<'light' | 'dark'>('light');
+
+  const colorMode = useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      },
+    }),
+    [],
+  );
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          primary: {
+            main: mode === 'light' ? '#1565c0' : '#90caf9',
+          },
+          background: {
+            default: mode === 'light' ? '#f0f2f5' : '#0f172a',
+            paper: mode === 'light' ? '#ffffff' : '#1e293b',
+          },
+          text: {
+            primary: mode === 'light' ? '#1c2434' : '#f8fafc',
+            secondary: mode === 'light' ? '#64748b' : '#94a3b8',
+          },
+        },
+        shape: {
+          borderRadius: 12,
+        },
+        components: {
+          MuiAppBar: {
+            styleOverrides: {
+              root: {
+                boxShadow: mode === 'light' ? 'none' : undefined,
+              }
+            }
+          }
+        }
+      }),
+    [mode],
+  );
+
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
@@ -58,7 +105,7 @@ function App() {
       const data = await getGames();
       setGames(data);
     } catch (error) {
-      showSnackbar("Error al cargar los juegos", "error");
+      showSnackbar("Error loading games", "error");
     } finally {
       setLoading(false);
     }
@@ -71,20 +118,20 @@ function App() {
   const handleAddGame = async (title: string, platform: string) => {
     try {
       await createGame(title, platform);
-      showSnackbar("Juego añadido correctamente", "success");
+      showSnackbar("Game added successfully", "success");
       loadGames();
     } catch (error) {
-      showSnackbar("Error al crear el juego", "error");
+      showSnackbar("Error creating game", "error");
     }
   };
 
   const handleDeleteGame = async (id: string) => {
     try {
       await deleteGame(id);
-      showSnackbar("Juego eliminado", "success");
+      showSnackbar("Game deleted", "success");
       loadGames();
     } catch (error) {
-      showSnackbar("Error al eliminar el juego", "error");
+      showSnackbar("Error deleting game", "error");
     }
   };
 
@@ -97,203 +144,219 @@ function App() {
   }, [games, searchTerm]);
 
   return (
-    <ThemeProvider theme={appTheme}>
-      <CssBaseline />
+    <ThemeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
 
-      <AppBar
-        position="static"
-        elevation={0}
-        sx={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
-      >
-        <Toolbar sx={{ height: 80 }}>
-          {searchOpen ? (
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <TextField
-                autoFocus
-                fullWidth
-                variant="standard"
-                placeholder="Buscar juego..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  disableUnderline: true,
-                  style: { fontSize: "1.5rem", color: "white" },
-                }}
-              />
-              <IconButton
-                onClick={() => {
-                  setSearchOpen(false);
-                  setSearchTerm("");
+        <AppBar
+          position="static"
+          elevation={0} 
+          sx={{ 
+            bgcolor: '#1e293b', 
+            color: 'white'
+          }}
+        >
+          <Toolbar sx={{ height: 80 }}>
+            {searchOpen ? (
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  bgcolor: 'background.paper',
+                  p: 1,
+                  borderRadius: 2,
+                  color: 'text.primary'
                 }}
               >
-                <CloseIcon />
-              </IconButton>
+                <TextField
+                  autoFocus
+                  fullWidth
+                  variant="standard"
+                  placeholder="Search game..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  InputProps={{
+                    disableUnderline: true,
+                    style: { fontSize: "1.2rem" },
+                  }}
+                />
+                <IconButton
+                  onClick={() => {
+                    setSearchOpen(false);
+                    setSearchTerm("");
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+            ) : (
+              <>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{
+                    flexGrow: 1,
+                    fontWeight: 800,
+                    letterSpacing: "-0.5px",
+                  }}
+                >
+                  Gamedex
+                </Typography>
+
+                <ThemeToggle />
+
+                <IconButton
+                  onClick={() => setSearchOpen(true)}
+                  sx={{ color: "inherit", transform: "scale(1.1)", ml: 1 }}
+                >
+                  <SearchIcon />
+                </IconButton>
+              </>
+            )}
+          </Toolbar>
+        </AppBar>
+
+        <Container maxWidth="xl" sx={{ mt: 5, mb: 10 }}>
+          {loading ? (
+            <Box display="flex" justifyContent="center" mt={10}>
+              <CircularProgress size={60} />
             </Box>
           ) : (
             <>
-              <Typography
-                variant="h4"
-                component="div"
+              <Paper
+                elevation={mode === 'light' ? 1 : 0}
                 sx={{
-                  flexGrow: 1,
-                  fontWeight: 900,
-                  color: "text.primary",
-                  letterSpacing: "-1px",
+                  p: 4,
+                  mb: 5,
+                  borderRadius: 3,
+                  bgcolor: 'background.paper',
+                  border: mode === 'dark' ? "1px solid rgba(255,255,255,0.1)" : "none",
+                  display: "flex",
+                  flexDirection: { xs: 'column', md: 'row' },
+                  alignItems: "center",
+                  justifyContent: 'space-between',
+                  gap: 3,
                 }}
               >
-                Gamedex
-              </Typography>
-              <IconButton
-                onClick={() => setSearchOpen(true)}
-                sx={{ color: "text.secondary", transform: "scale(1.2)" }}
-              >
-                <SearchIcon />
-              </IconButton>
+                <Box>
+                  <Typography
+                    variant="h3"
+                    fontWeight="800"
+                    color="text.primary"
+                    sx={{ mb: 1, fontSize: { xs: '2rem', md: '3rem' } }}
+                  >
+                    {searchTerm ? "Results" : "Your Collection"}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    color="text.secondary"
+                    fontWeight="400"
+                  >
+                    Manage and organize your favorite video games.
+                  </Typography>
+                </Box>
+
+                {!searchTerm && (
+                  <Chip
+                    icon={<VideogameAssetIcon />}
+                    label={`${games.length} Games`}
+                    sx={{
+                      height: 48,
+                      px: 2,
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      borderRadius: 2,
+                      bgcolor: mode === 'light' ? 'rgba(21, 101, 192, 0.08)' : 'rgba(144, 202, 249, 0.16)',
+                      color: 'primary.main',
+                      border: 'none', 
+                    }}
+                  />
+                )}
+              </Paper>
+
+              <Grid container spacing={3}>
+                {filteredGames.length === 0 ? (
+                  <Grid size={{ xs: 12 }}>
+                    <Paper
+                      sx={{
+                        p: 10,
+                        textAlign: "center",
+                        borderRadius: 4,
+                        bgcolor: "background.paper",
+                        border: "2px dashed",
+                        borderColor: "divider"
+                      }}
+                    >
+                      <Typography
+                        variant="h5"
+                        color="text.secondary"
+                        fontWeight="bold"
+                      >
+                        {searchTerm
+                          ? "No results found 🔍"
+                          : "It's empty here... 🕸️"}
+                      </Typography>
+                    </Paper>
+                  </Grid>
+                ) : (
+                  filteredGames.map((game) => (
+                    <Grid
+                      size={{ xs: 6, sm: 4, md: 3, lg: 2, xl: 2 }}
+                      key={game.id}
+                    >
+                      <GameCard
+                        title={game.title}
+                        platform={game.platform}
+                        onDelete={() => handleDeleteGame(game.id)}
+                      />
+                    </Grid>
+                  ))
+                )}
+              </Grid>
             </>
           )}
-        </Toolbar>
-      </AppBar>
 
-      <Container maxWidth="xl" sx={{ mt: 5, mb: 10 }}>
-        {loading ? (
-          <Box display="flex" justifyContent="center" mt={10}>
-            <CircularProgress size={60} />
-          </Box>
-        ) : (
-          <>
-            <Paper
-              elevation={0}
-              sx={{
-                p: 4,
-                mb: 5,
-                borderRadius: 4,
-                background: "linear-gradient(45deg, #1e1e1e 30%, #252525 90%)",
-                border: "1px solid rgba(255,255,255,0.05)",
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-              }}
-            >
-              <Box>
-                <Typography
-                  variant="h3"
-                  fontWeight="800"
-                  color="text.primary"
-                  sx={{ mb: 1 }}
-                >
-                  {searchTerm ? "Resultados" : "Tu Colección"}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  color="text.secondary"
-                  fontWeight="400"
-                >
-                  Gestiona y organiza tus videojuegos favoritos.
-                </Typography>
-              </Box>
-
-              {!searchTerm && (
-                <Chip
-                  icon={<VideogameAssetIcon />}
-                  label={`${games.length} Juegos`}
-                  sx={{
-                    height: 40,
-                    px: 1,
-                    fontSize: "1rem",
-                    fontWeight: "bold",
-                    bgcolor: "rgba(187, 134, 252, 0.1)",
-                    color: "primary.main",
-                    border: "1px solid rgba(187, 134, 252, 0.3)",
-                  }}
-                />
-              )}
-            </Paper>
-
-            <Grid container spacing={2}>
-              {filteredGames.length === 0 ? (
-                <Grid size={{ xs: 12 }}>
-                  <Paper
-                    sx={{
-                      p: 10,
-                      textAlign: "center",
-                      borderRadius: 4,
-                      bgcolor: "background.paper",
-                      border: "2px dashed #444",
-                    }}
-                  >
-                    <Typography
-                      variant="h4"
-                      color="text.secondary"
-                      fontWeight="bold"
-                    >
-                      {searchTerm
-                        ? "No encontré nada 🔍"
-                        : "Está muy vacío aquí... 🕸️"}
-                    </Typography>
-                  </Paper>
-                </Grid>
-              ) : (
-                filteredGames.map((game) => (
-                  <Grid
-                    size={{ xs: 6, sm: 4, md: 3, lg: 2, xl: 2 }}
-                    key={game.id}
-                  >
-                    <GameCard
-                      title={game.title}
-                      platform={game.platform}
-                      onDelete={() => handleDeleteGame(game.id)}
-                    />
-                  </Grid>
-                ))
-              )}
-            </Grid>
-          </>
-        )}
-
-        <Fab
-          color="primary"
-          onClick={() => setOpenDialog(true)}
-          sx={{
-            position: "fixed",
-            bottom: 40,
-            right: 40,
-            width: 72,
-            height: 72,
-          }}
-        >
-          <AddIcon sx={{ fontSize: 36 }} />
-        </Fab>
-
-        <AddGameDialog
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
-          onAdd={handleAddGame}
-        />
-
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={4000}
-          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        >
-          <Alert
-            onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-            severity={snackbar.severity}
-            sx={{ width: "100%" }}
-            variant="filled"
+          <Fab
+            color="primary"
+            onClick={() => setOpenDialog(true)}
+            sx={{
+              position: "fixed",
+              bottom: 40,
+              right: 40,
+              width: 72,
+              height: 72,
+              boxShadow: 4
+            }}
           >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
-      </Container>
-    </ThemeProvider>
+            <AddIcon sx={{ fontSize: 36 }} />
+          </Fab>
+
+          <AddGameDialog
+            open={openDialog}
+            onClose={() => setOpenDialog(false)}
+            onAdd={handleAddGame}
+          />
+
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={4000}
+            onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          >
+            <Alert
+              onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+              severity={snackbar.severity}
+              sx={{ width: "100%" }}
+              variant="filled"
+            >
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
+        </Container>
+      </ThemeProvider>
+    </ThemeContext.Provider>
   );
 }
 
