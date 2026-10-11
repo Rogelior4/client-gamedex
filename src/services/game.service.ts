@@ -1,10 +1,12 @@
 import axios from "axios";
 
 export interface Game {
-  id: string;
+  id: number;
   title: string;
   platform: string;
   cover?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
@@ -38,7 +40,15 @@ export const createGame = async (
   return data;
 };
 
-export const deleteGame = async (id: string): Promise<void> => {
+export const updateGame = async (
+  id: number,
+  data: { title?: string; platform?: string },
+): Promise<Game> => {
+  const { data: updated } = await api.patch<Game>(`/games/${id}`, data);
+  return updated;
+};
+
+export const deleteGame = async (id: number): Promise<void> => {
   await api.delete(`/games/${id}`);
 };
 
