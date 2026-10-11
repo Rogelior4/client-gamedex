@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Card,
-  CardContent,
   Typography,
   Chip,
   Box,
@@ -71,11 +70,10 @@ export default function GameCard({
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        bgcolor: isDark ? "#0f172a" : "#ffffff",
-        color: "text.primary",
-        position: "relative",
-        overflow: "hidden",
-        borderRadius: "20px",
+        bgcolor: isDark ? "rgba(19, 27, 46, 0.75)" : "rgba(255, 255, 255, 0.9)",
+        backdropFilter: "blur(12px)",
+        borderRadius: "22px",
+        p: 1.25,
         border: "1px solid",
         borderColor: isHovered
           ? platformStyle.color
@@ -83,22 +81,23 @@ export default function GameCard({
           ? "rgba(255, 255, 255, 0.08)"
           : "rgba(0, 0, 0, 0.08)",
         boxShadow: isHovered
-          ? `0 20px 35px -8px rgba(0,0,0,0.5), 0 0 25px -4px ${platformStyle.color}45`
+          ? `0 24px 40px -12px rgba(0,0,0,0.5), 0 0 25px -4px ${platformStyle.color}45`
           : isDark
-          ? "0 4px 20px rgba(0, 0, 0, 0.4)"
-          : "0 4px 15px rgba(0, 0, 0, 0.06)",
-        transform: isHovered ? "translateY(-6px) scale(1.02)" : "translateY(0) scale(1)",
+          ? "0 6px 20px rgba(0, 0, 0, 0.35)"
+          : "0 6px 18px rgba(0, 0, 0, 0.05)",
+        transform: isHovered ? "translateY(-8px) scale(1.015)" : "translateY(0) scale(1)",
         transition: `all 0.35s ${smoothTransition}`,
         cursor: "pointer",
-        zIndex: isHovered ? 10 : 1,
+        position: "relative",
       }}
     >
-      {/* Cover Image Container (2:3 Vertical Poster Aspect Ratio) */}
+      {/* 1. PURE, UNOBSTRUCTED POSTER CONTAINER (2:3 Aspect Ratio) */}
       <Box
         sx={{
           width: "100%",
           aspectRatio: "2/3",
-          bgcolor: isDark ? "#050811" : "#f1f5f9",
+          borderRadius: "16px",
+          bgcolor: isDark ? "#080c16" : "#f1f5f9",
           position: "relative",
           overflow: "hidden",
         }}
@@ -110,7 +109,7 @@ export default function GameCard({
             height="100%"
             animation="wave"
             sx={{
-              bgcolor: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.06)",
+              bgcolor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)",
             }}
           />
         ) : coverUrl ? (
@@ -123,12 +122,14 @@ export default function GameCard({
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              transition: `transform 0.45s ${smoothTransition}, filter 0.35s ease`,
-              transform: isHovered ? "scale(1.08)" : "scale(1.0)",
-              filter: isHovered ? "brightness(1.06)" : "brightness(0.98)",
+              display: "block",
+              transition: `transform 0.5s ${smoothTransition}, filter 0.35s ease`,
+              transform: isHovered ? "scale(1.06)" : "scale(1.0)",
+              filter: isHovered ? "contrast(1.04) brightness(1.04)" : "none",
             }}
           />
         ) : (
+          /* Fallback Stylized Poster Art when no Steam image exists */
           <Box
             sx={{
               width: "100%",
@@ -138,36 +139,70 @@ export default function GameCard({
               alignItems: "center",
               justifyContent: "center",
               background: isDark
-                ? "radial-gradient(circle at 50% 30%, #1e293b 0%, #020617 100%)"
-                : "radial-gradient(circle at 50% 30%, #e2e8f0 0%, #cbd5e1 100%)",
-              color: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)",
-              p: 2,
+                ? "linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #030712 100%)"
+                : "linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 50%, #cbd5e1 100%)",
+              p: 2.5,
               textAlign: "center",
+              position: "relative",
             }}
           >
-            <SportsEsportsRoundedIcon sx={{ fontSize: 56, mb: 1, opacity: 0.8 }} />
-            <Typography variant="caption" fontWeight="600" sx={{ letterSpacing: 1, textTransform: "uppercase" }}>
+            <Box
+              sx={{
+                width: 64,
+                height: 64,
+                borderRadius: "20px",
+                bgcolor: isDark ? "rgba(99, 102, 241, 0.15)" : "rgba(99, 102, 241, 0.1)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "primary.main",
+                mb: 2,
+              }}
+            >
+              <SportsEsportsRoundedIcon sx={{ fontSize: 36 }} />
+            </Box>
+            <Typography
+              variant="subtitle2"
+              fontWeight="800"
+              sx={{
+                color: isDark ? "#e2e8f0" : "#334155",
+                lineHeight: 1.2,
+                fontSize: "0.95rem",
+              }}
+            >
+              {title}
+            </Typography>
+            <Typography
+              variant="caption"
+              fontWeight="700"
+              sx={{
+                color: platformStyle.color,
+                letterSpacing: 1,
+                textTransform: "uppercase",
+                mt: 1,
+              }}
+            >
               {platform}
             </Typography>
           </Box>
         )}
 
-        {/* Floating Actions Pill (Top Right, revealed on hover) */}
+        {/* Floating Actions (Revealed only on hover, discrete top-right glass pill) */}
         <Box
           sx={{
             position: "absolute",
-            top: 10,
-            right: 10,
+            top: 8,
+            right: 8,
             display: "flex",
             alignItems: "center",
             gap: 0.5,
             p: "4px 6px",
             borderRadius: "12px",
-            bgcolor: isDark ? "rgba(15, 23, 42, 0.85)" : "rgba(255, 255, 255, 0.9)",
+            bgcolor: isDark ? "rgba(11, 15, 25, 0.88)" : "rgba(255, 255, 255, 0.92)",
             backdropFilter: "blur(12px)",
             border: "1px solid",
             borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.1)",
-            boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
+            boxShadow: "0 6px 20px rgba(0,0,0,0.35)",
             opacity: isHovered ? 1 : 0,
             transform: isHovered ? "translateY(0)" : "translateY(-6px)",
             transition: `all 0.25s ${smoothTransition}`,
@@ -182,8 +217,8 @@ export default function GameCard({
               }}
               size="small"
               sx={{
-                width: 30,
-                height: 30,
+                width: 28,
+                height: 28,
                 color: isDark ? "#94a3b8" : "#64748b",
                 "&:hover": {
                   color: "#38bdf8",
@@ -191,7 +226,7 @@ export default function GameCard({
                 },
               }}
             >
-              <EditRoundedIcon sx={{ fontSize: 18 }} />
+              <EditRoundedIcon sx={{ fontSize: 16 }} />
             </IconButton>
           </Tooltip>
 
@@ -203,8 +238,8 @@ export default function GameCard({
               }}
               size="small"
               sx={{
-                width: 30,
-                height: 30,
+                width: 28,
+                height: 28,
                 color: isDark ? "#94a3b8" : "#64748b",
                 "&:hover": {
                   color: "#f87171",
@@ -212,90 +247,64 @@ export default function GameCard({
                 },
               }}
             >
-              <DeleteOutlineRoundedIcon sx={{ fontSize: 18 }} />
+              <DeleteOutlineRoundedIcon sx={{ fontSize: 16 }} />
             </IconButton>
           </Tooltip>
         </Box>
-
-        {/* Ambient Darkened Gradient at bottom for text readability */}
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            height: "75%",
-            background: isDark
-              ? "linear-gradient(to top, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.6) 50%, transparent 100%)"
-              : "linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%)",
-            pointerEvents: "none",
-          }}
-        />
       </Box>
 
-      {/* Card Info Overlay */}
-      <CardContent
-        sx={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          zIndex: 3,
-          p: 2,
-          pb: "16px !important",
-        }}
-      >
-        <Typography
-          variant="subtitle1"
-          fontWeight="700"
-          sx={{
-            lineHeight: 1.25,
-            mb: 1,
-            color: isDark ? "#f8fafc" : "#0f172a",
-            fontSize: "1.05rem",
-            display: "-webkit-box",
-            overflow: "hidden",
-            WebkitBoxOrient: "vertical",
-            WebkitLineClamp: isHovered ? 2 : 1,
-            textShadow: isDark ? "0 2px 4px rgba(0,0,0,0.8)" : "none",
-            transition: `all 0.25s ${smoothTransition}`,
-          }}
-        >
-          {title}
-        </Typography>
+      {/* 2. DEDICATED CLEAN INFO FOOTER (COMPLETELY OUTSIDE THE POSTER ART) */}
+      <Box sx={{ pt: 1.5, pb: 0.5, px: 0.5 }}>
+        <Tooltip title={title} placement="top" arrow enterDelay={400}>
+          <Typography
+            variant="subtitle1"
+            fontWeight="700"
+            noWrap
+            sx={{
+              color: isDark ? "#f8fafc" : "#0f172a",
+              fontSize: "0.98rem",
+              lineHeight: 1.2,
+              mb: 0.8,
+              transition: `color 0.25s ease`,
+              "&:hover": {
+                color: platformStyle.color,
+              },
+            }}
+          >
+            {title}
+          </Typography>
+        </Tooltip>
 
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Chip
             label={platformStyle.label}
             size="small"
             sx={{
-              height: 24,
-              fontSize: "0.75rem",
+              height: 22,
+              fontSize: "0.72rem",
               fontWeight: 700,
-              letterSpacing: 0.5,
-              borderRadius: "8px",
+              letterSpacing: 0.3,
+              borderRadius: "7px",
               color: platformStyle.color,
               bgcolor: platformStyle.bgColor,
               border: "1px solid",
               borderColor: platformStyle.borderColor,
-              backdropFilter: "blur(8px)",
-              transition: `all 0.25s ${smoothTransition}`,
             }}
           />
 
           <Box
             sx={{
-              width: 8,
-              height: 8,
+              width: 7,
+              height: 7,
               borderRadius: "50%",
               bgcolor: platformStyle.color,
-              boxShadow: `0 0 10px ${platformStyle.color}`,
+              boxShadow: `0 0 8px ${platformStyle.color}`,
               opacity: isHovered ? 1 : 0.4,
               transition: "opacity 0.25s ease",
             }}
           />
         </Box>
-      </CardContent>
+      </Box>
     </Card>
   );
 }
