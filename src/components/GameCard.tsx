@@ -9,18 +9,20 @@ import {
   Skeleton,
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 import { getGameCover } from "../services/game.service";
 
 interface GameCardProps {
   title: string;
   platform: string;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
 const smoothTransition = "cubic-bezier(0.25, 0.8, 0.25, 1)";
 
-export default function GameCard({ title, platform, onDelete }: GameCardProps) {
+export default function GameCard({ title, platform, onEdit, onDelete }: GameCardProps) {
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
   const [loadingImage, setLoadingImage] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
@@ -195,26 +197,49 @@ export default function GameCard({ title, platform, onDelete }: GameCardProps) {
             />
           </Box>
 
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-            size="small"
-            aria-label="delete game"
-            sx={{
-              color: "grey.500",
-              opacity: isHovered ? 1 : 0.7,
-              transition: "opacity 0.2s",
-              "&:hover": {
-                color: "#ff4444",
-                bgcolor: "rgba(255,68,68,0.1)",
-                opacity: 1,
-              },
-            }}
-          >
-            <DeleteOutlineIcon fontSize="small" />
-          </IconButton>
+          <Box display="flex" alignItems="center" gap={0.5}>
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+              size="small"
+              aria-label="edit game"
+              sx={{
+                color: "grey.500",
+                opacity: isHovered ? 1 : 0.7,
+                transition: "opacity 0.2s",
+                "&:hover": {
+                  color: "#60a5fa",
+                  bgcolor: "rgba(96,165,250,0.15)",
+                  opacity: 1,
+                },
+              }}
+            >
+              <EditOutlinedIcon fontSize="small" />
+            </IconButton>
+
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              size="small"
+              aria-label="delete game"
+              sx={{
+                color: "grey.500",
+                opacity: isHovered ? 1 : 0.7,
+                transition: "opacity 0.2s",
+                "&:hover": {
+                  color: "#ff4444",
+                  bgcolor: "rgba(255,68,68,0.1)",
+                  opacity: 1,
+                },
+              }}
+            >
+              <DeleteOutlineIcon fontSize="small" />
+            </IconButton>
+          </Box>
         </Box>
       </CardContent>
     </Card>

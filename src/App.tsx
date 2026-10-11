@@ -25,12 +25,14 @@ import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 
 import GameCard from "./components/GameCard";
 import AddGameDialog from "./components/AddGameDialog";
+import EditGameDialog from "./components/EditGameDialog";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { ThemeContext } from "./theme/ThemeContext";
 
 import {
   getGames,
   createGame,
+  updateGame,
   deleteGame,
   Game,
 } from "./services/game.service";
@@ -83,6 +85,7 @@ function App() {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
+  const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -125,7 +128,21 @@ function App() {
     }
   };
 
-  const handleDeleteGame = async (id: string) => {
+  const handleUpdateGame = async (
+    id: number,
+    title: string,
+    platform: string,
+  ) => {
+    try {
+      await updateGame(id, { title, platform });
+      showSnackbar("Game updated successfully", "success");
+      loadGames();
+    } catch (error) {
+      showSnackbar("Error updating game", "error");
+    }
+  };
+
+  const handleDeleteGame = async (id: number) => {
     try {
       await deleteGame(id);
       showSnackbar("Game deleted", "success");
@@ -309,6 +326,7 @@ function App() {
                       <GameCard
                         title={game.title}
                         platform={game.platform}
+                        onEdit={() => setEditingGame(game)}
                         onDelete={() => handleDeleteGame(game.id)}
                       />
                     </Grid>
@@ -337,6 +355,13 @@ function App() {
             open={openDialog}
             onClose={() => setOpenDialog(false)}
             onAdd={handleAddGame}
+          />
+
+          <EditGameDialog
+            open={Boolean(editingGame)}
+            game={editingGame}
+            onClose={() => setEditingGame(null)}
+            onSave={handleUpdateGame}
           />
 
           <Snackbar
