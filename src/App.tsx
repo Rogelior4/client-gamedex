@@ -38,7 +38,19 @@ import {
 } from "./services/game.service";
 
 function App() {
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  const [mode, setMode] = useState<'light' | 'dark'>(() => {
+    const savedMode = localStorage.getItem('gamedex_theme_mode');
+    if (savedMode === 'light' || savedMode === 'dark') {
+      return savedMode;
+    }
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+      ? 'light'
+      : 'dark';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('gamedex_theme_mode', mode);
+  }, [mode]);
 
   const colorMode = useMemo(
     () => ({
