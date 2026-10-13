@@ -18,6 +18,7 @@ import { getPlatformStyle } from "../utils/platformStyles";
 interface GameCardProps {
   title: string;
   platform: string;
+  coverUrl?: string | null;
   onEdit: () => void;
   onDelete: () => void;
 }
@@ -27,22 +28,30 @@ const smoothTransition = "cubic-bezier(0.2, 0.8, 0.2, 1)";
 export default function GameCard({
   title,
   platform,
+  coverUrl: initialCoverUrl,
   onEdit,
   onDelete,
 }: GameCardProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
-  const [coverUrl, setCoverUrl] = useState<string | null>(null);
-  const [loadingImage, setLoadingImage] = useState(true);
+  const [coverUrl, setCoverUrl] = useState<string | null>(initialCoverUrl ?? null);
+  const [loadingImage, setLoadingImage] = useState(!initialCoverUrl);
   const [isHovered, setIsHovered] = useState(false);
 
   const platformStyle = getPlatformStyle(platform, isDark);
 
   useEffect(() => {
+    if (initialCoverUrl) {
+      setCoverUrl(initialCoverUrl);
+      setLoadingImage(false);
+      return;
+    }
+
     let isMounted = true;
 
     async function fetchCover() {
       try {
+        setLoadingImage(true);
         const url = await getGameCover(title);
         if (isMounted) {
           setCoverUrl(url);
@@ -60,7 +69,7 @@ export default function GameCard({
     return () => {
       isMounted = false;
     };
-  }, [title]);
+  }, [initialCoverUrl, title]);
 
   return (
     <Card

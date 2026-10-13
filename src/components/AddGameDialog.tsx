@@ -18,7 +18,7 @@ import { useTheme } from "@mui/material/styles";
 interface AddGameDialogProps {
   open: boolean;
   onClose: () => void;
-  onAdd: (title: string, platform: string) => void;
+  onAdd: (title: string, platform: string, coverUrl?: string) => void;
 }
 
 const PLATFORM_PRESETS = ["PC", "PlayStation 5", "Xbox Series", "Nintendo Switch", "Steam Deck"];
@@ -32,17 +32,23 @@ export default function AddGameDialog({
   const isDark = theme.palette.mode === "dark";
   const [title, setTitle] = useState("");
   const [platform, setPlatform] = useState("");
+  const [coverUrl, setCoverUrl] = useState("");
 
   useEffect(() => {
     if (!open) {
       setTitle("");
       setPlatform("");
+      setCoverUrl("");
     }
   }, [open]);
 
   const handleSubmit = () => {
     if (title.trim() && platform.trim()) {
-      onAdd(title.trim(), platform.trim());
+      onAdd(
+        title.trim(),
+        platform.trim(),
+        coverUrl.trim() ? coverUrl.trim() : undefined,
+      );
       onClose();
     }
   };
@@ -173,6 +179,26 @@ export default function AddGameDialog({
             ))}
           </Box>
         </Box>
+
+        <TextField
+          label="URL de Carátula (Opcional)"
+          placeholder="https://... (deja vacío para autocompletar con Steam)"
+          fullWidth
+          variant="outlined"
+          value={coverUrl}
+          onChange={(e) => setCoverUrl(e.target.value)}
+          onKeyDown={handleKeyDown}
+          helperText="Si se deja vacío, GameDex buscará la carátula oficial automáticamente en Steam."
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "14px",
+            },
+            "& .MuiFormHelperText-root": {
+              fontSize: "0.75rem",
+              color: "text.secondary",
+            },
+          }}
+        />
       </DialogContent>
 
       <DialogActions sx={{ p: 2, pt: 1, gap: 1 }}>

@@ -20,7 +20,7 @@ interface EditGameDialogProps {
   open: boolean;
   game: Game | null;
   onClose: () => void;
-  onSave: (id: number, title: string, platform: string) => void;
+  onSave: (id: number, title: string, platform: string, coverUrl?: string | null) => void;
 }
 
 const PLATFORM_PRESETS = ["PC", "PlayStation 5", "Xbox Series", "Nintendo Switch", "Steam Deck"];
@@ -35,17 +35,24 @@ export default function EditGameDialog({
   const isDark = theme.palette.mode === "dark";
   const [title, setTitle] = useState("");
   const [platform, setPlatform] = useState("");
+  const [coverUrl, setCoverUrl] = useState("");
 
   useEffect(() => {
     if (game && open) {
       setTitle(game.title);
       setPlatform(game.platform);
+      setCoverUrl(game.coverUrl || "");
     }
   }, [game, open]);
 
   const handleSubmit = () => {
     if (game && title.trim() && platform.trim()) {
-      onSave(game.id, title.trim(), platform.trim());
+      onSave(
+        game.id,
+        title.trim(),
+        platform.trim(),
+        coverUrl.trim() ? coverUrl.trim() : null,
+      );
       onClose();
     }
   };
@@ -173,6 +180,26 @@ export default function EditGameDialog({
             ))}
           </Box>
         </Box>
+
+        <TextField
+          label="URL de Carátula (Opcional)"
+          placeholder="https://... (deja vacío para autocompletar con Steam)"
+          fullWidth
+          variant="outlined"
+          value={coverUrl}
+          onChange={(e) => setCoverUrl(e.target.value)}
+          onKeyDown={handleKeyDown}
+          helperText="Opcional: Si lo dejas vacío, buscará la portada en Steam al cambiar el título."
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "14px",
+            },
+            "& .MuiFormHelperText-root": {
+              fontSize: "0.75rem",
+              color: "text.secondary",
+            },
+          }}
+        />
       </DialogContent>
 
       <DialogActions sx={{ p: 2, pt: 1, gap: 1 }}>
