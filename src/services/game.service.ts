@@ -1,48 +1,12 @@
 import axios from "axios";
+import {
+  Game,
+  GameStatus,
+  CreateGameData,
+  UpdateGameData,
+} from "../types/game.types";
 
-export type GameStatus =
-  | "BACKLOG"
-  | "PLAYING"
-  | "COMPLETED"
-  | "ABANDONED"
-  | "WISHLIST";
-
-export interface Game {
-  id: number;
-  title: string;
-  platform: string;
-  coverUrl?: string | null;
-  cover?: string;
-  status: GameStatus;
-  rating?: number | null;
-  isFavorite: boolean;
-  hoursPlayed?: number | null;
-  notes?: string | null;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface CreateGameData {
-  title: string;
-  platform: string;
-  coverUrl?: string | null;
-  status?: GameStatus;
-  rating?: number | null;
-  isFavorite?: boolean;
-  hoursPlayed?: number | null;
-  notes?: string | null;
-}
-
-export interface UpdateGameData {
-  title?: string;
-  platform?: string;
-  coverUrl?: string | null;
-  status?: GameStatus;
-  rating?: number | null;
-  isFavorite?: boolean;
-  hoursPlayed?: number | null;
-  notes?: string | null;
-}
+export type { Game, GameStatus, CreateGameData, UpdateGameData };
 
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
