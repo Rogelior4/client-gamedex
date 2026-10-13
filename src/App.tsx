@@ -19,6 +19,7 @@ import { GameGrid } from './components/games/GameGrid';
 import { EmptyState } from './components/games/EmptyState';
 import AddGameDialog from './components/games/AddGameDialog';
 import EditGameDialog from './components/games/EditGameDialog';
+import { DeleteGameDialog } from './components/games/DeleteGameDialog';
 
 import { ThemeContext } from './theme/ThemeContext';
 import { useColorMode } from './theme/useColorMode';
@@ -46,6 +47,7 @@ function App() {
   // Local UI filters and dialogs
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
+  const [deletingGame, setDeletingGame] = useState<Game | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [activePlatformFilter, setActivePlatformFilter] = useState('ALL');
   const [activeStatusFilter, setActiveStatusFilter] = useState('ALL');
@@ -163,7 +165,7 @@ function App() {
             <GameGrid
               games={filteredGames}
               onEdit={setEditingGame}
-              onDelete={handleDeleteGame}
+              onDelete={setDeletingGame}
               onToggleFavorite={handleToggleFavorite}
             />
           )}
@@ -206,6 +208,13 @@ function App() {
             game={editingGame}
             onClose={() => setEditingGame(null)}
             onSave={handleUpdateGame}
+          />
+
+          <DeleteGameDialog
+            open={Boolean(deletingGame)}
+            game={deletingGame}
+            onClose={() => setDeletingGame(null)}
+            onConfirm={handleDeleteGame}
           />
 
           {/* Notification Snackbar */}

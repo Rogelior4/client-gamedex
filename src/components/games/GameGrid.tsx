@@ -6,7 +6,7 @@ import GameCard from './GameCard';
 interface GameGridProps {
   games: Game[];
   onEdit: (game: Game) => void;
-  onDelete: (id: number) => void;
+  onDelete: (game: Game) => void;
   onToggleFavorite: (id: number, current: boolean) => void;
 }
 
@@ -33,7 +33,7 @@ export const GameGrid: React.FC<GameGridProps> = ({
             hoursPlayed={game.hoursPlayed}
             notes={game.notes}
             onEdit={() => onEdit(game)}
-            onDelete={() => onDelete(game.id)}
+            onDelete={() => onDelete(game)}
             onToggleFavorite={() => onToggleFavorite(game.id, game.isFavorite)}
           />
         </Grid>
