@@ -1,257 +1,54 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from 'react';
 import {
   Container,
-  Typography,
   Box,
   CircularProgress,
-  Grid,
+  Typography,
   Fab,
   ThemeProvider,
   CssBaseline,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Paper,
-  TextField,
-  Chip,
   Snackbar,
   Alert,
-  createTheme,
-  Button,
-  InputAdornment,
   Tooltip,
-} from "@mui/material";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
-import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
-import SyncRoundedIcon from "@mui/icons-material/SyncRounded";
+} from '@mui/material';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
-import GameCard from "./components/GameCard";
-import AddGameDialog from "./components/AddGameDialog";
-import EditGameDialog from "./components/EditGameDialog";
-import { ThemeToggle } from "./components/ThemeToggle";
-import { ThemeContext } from "./theme/ThemeContext";
+import { Navbar } from './components/layout/Navbar';
+import { HeroStats } from './components/games/HeroStats';
+import { GameGrid } from './components/games/GameGrid';
+import { EmptyState } from './components/games/EmptyState';
+import AddGameDialog from './components/games/AddGameDialog';
+import EditGameDialog from './components/games/EditGameDialog';
 
-import {
-  getGames,
-  createGame,
-  updateGame,
-  deleteGame,
-  syncMissingCovers,
-  toggleFavorite,
-  Game,
-  CreateGameData,
-  UpdateGameData,
-} from "./services/game.service";
-
-const STATUS_FILTERS = [
-  { id: "ALL", label: "Todos", color: "#6366f1" },
-  { id: "FAVORITES", label: "⭐ Favoritos", color: "#f59e0b" },
-  { id: "PLAYING", label: "Jugando", color: "#22c55e" },
-  { id: "COMPLETED", label: "Completados", color: "#eab308" },
-  { id: "BACKLOG", label: "Pendientes", color: "#818cf8" },
-  { id: "WISHLIST", label: "Deseados", color: "#ec4899" },
-];
-
-const PLATFORM_FILTERS = [
-  { id: "ALL", label: "Todas", color: "#6366f1" },
-  { id: "PC", label: "PC", color: "#38bdf8" },
-  { id: "PLAYSTATION", label: "PlayStation", color: "#818cf8" },
-  { id: "XBOX", label: "Xbox", color: "#4ade80" },
-  { id: "NINTENDO", label: "Nintendo", color: "#fb7185" },
-];
+import { ThemeContext } from './theme/ThemeContext';
+import { useColorMode } from './theme/useColorMode';
+import { useGames } from './hooks/useGames';
+import { Game } from './types/game.types';
 
 function App() {
-  const [mode, setMode] = useState<'light' | 'dark'>(() => {
-    const savedMode = localStorage.getItem('gamedex_theme_mode');
-    if (savedMode === 'light' || savedMode === 'dark') {
-      return savedMode;
-    }
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
-      ? 'light'
-      : 'dark';
-  });
+  const { isDark, toggleColorMode, theme } = useColorMode();
+  const themeContextValue = useMemo(() => ({ toggleColorMode }), [toggleColorMode]);
 
-  useEffect(() => {
-    localStorage.setItem('gamedex_theme_mode', mode);
-  }, [mode]);
+  const {
+    games,
+    loading,
+    isSyncing,
+    snackbar,
+    stats,
+    closeSnackbar,
+    handleAddGame,
+    handleUpdateGame,
+    handleDeleteGame,
+    handleToggleFavorite,
+    handleSyncCovers,
+  } = useGames();
 
-  const colorMode = useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-      },
-    }),
-    [],
-  );
-
-  const isDark = mode === "dark";
-
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-          primary: {
-            main: mode === 'light' ? '#4f46e5' : '#6366f1',
-          },
-          secondary: {
-            main: '#38bdf8',
-          },
-          background: {
-            default: mode === 'light' ? '#f8fafc' : '#0b0f19',
-            paper: mode === 'light' ? '#ffffff' : '#111827',
-          },
-          text: {
-            primary: mode === 'light' ? '#0f172a' : '#f8fafc',
-            secondary: mode === 'light' ? '#64748b' : '#94a3b8',
-          },
-        },
-        typography: {
-          fontFamily: '"Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-          h3: { fontWeight: 800 },
-          h4: { fontWeight: 800 },
-          h6: { fontWeight: 700 },
-        },
-        shape: {
-          borderRadius: 16,
-        },
-        components: {
-          MuiButton: {
-            styleOverrides: {
-              root: {
-                borderRadius: 12,
-                textTransform: 'none',
-                fontWeight: 600,
-              },
-            },
-          },
-          MuiPaper: {
-            styleOverrides: {
-              root: {
-                backgroundImage: 'none',
-              },
-            },
-          },
-        },
-      }),
-    [mode],
-  );
-
-  const [games, setGames] = useState<Game[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Local UI filters and dialogs
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activePlatformFilter, setActivePlatformFilter] = useState("ALL");
-  const [activeStatusFilter, setActiveStatusFilter] = useState("ALL");
-
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: "success" | "error";
-  }>({ open: false, message: "", severity: "success" });
-
-  const showSnackbar = useCallback(
-    (message: string, severity: "success" | "error") => {
-      setSnackbar({ open: true, message, severity });
-    },
-    [],
-  );
-
-  const loadGames = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await getGames();
-      setGames(data);
-    } catch (error) {
-      showSnackbar("Error al conectar con la API de GameDex", "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [showSnackbar]);
-
-  useEffect(() => {
-    loadGames();
-  }, [loadGames]);
-
-  const [isSyncing, setIsSyncing] = useState(false);
-
-  const handleAddGame = async (data: CreateGameData) => {
-    try {
-      await createGame(data);
-      showSnackbar(`"${data.title}" añadido a tu colección`, "success");
-      loadGames();
-    } catch (error) {
-      showSnackbar("Error al crear el videojuego", "error");
-    }
-  };
-
-  const handleUpdateGame = async (id: number, data: UpdateGameData) => {
-    try {
-      await updateGame(id, data);
-      showSnackbar(`"${data.title || "Juego"}" actualizado correctamente`, "success");
-      loadGames();
-    } catch (error) {
-      showSnackbar("Error al actualizar el juego", "error");
-    }
-  };
-
-  const handleToggleFavorite = async (id: number, current: boolean) => {
-    try {
-      await toggleFavorite(id, current);
-      showSnackbar(
-        current ? "Eliminado de favoritos" : "⭐ Marcado como favorito",
-        "success",
-      );
-      loadGames();
-    } catch (error) {
-      showSnackbar("Error al actualizar favorito", "error");
-    }
-  };
-
-  const handleSyncCovers = async () => {
-    try {
-      setIsSyncing(true);
-      showSnackbar("Sincronizando carátulas desde Steam...", "success");
-      const res = await syncMissingCovers();
-      showSnackbar(
-        res.updated > 0
-          ? `${res.updated} carátulas sincronizadas y guardadas con éxito`
-          : "Todas las carátulas ya están sincronizadas",
-        "success",
-      );
-      loadGames();
-    } catch (error) {
-      showSnackbar("Error al sincronizar carátulas con el servidor", "error");
-    } finally {
-      setIsSyncing(false);
-    }
-  };
-
-  const handleDeleteGame = async (id: number) => {
-    try {
-      await deleteGame(id);
-      showSnackbar("Juego eliminado de la colección", "success");
-      loadGames();
-    } catch (error) {
-      showSnackbar("Error al eliminar el juego", "error");
-    }
-  };
-
-  // Stats calculation
-  const stats = useMemo(() => {
-    return {
-      total: games.length,
-      playing: games.filter((g) => g.status === "PLAYING").length,
-      completed: games.filter((g) => g.status === "COMPLETED").length,
-      backlog: games.filter((g) => g.status === "BACKLOG").length,
-      favorites: games.filter((g) => g.isFavorite).length,
-      platforms: new Set(games.map((g) => g.platform.trim().toLowerCase())).size,
-    };
-  }, [games]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activePlatformFilter, setActivePlatformFilter] = useState('ALL');
+  const [activeStatusFilter, setActiveStatusFilter] = useState('ALL');
 
   // Filter games based on search, status, and platform
   const filteredGames = useMemo(() => {
@@ -263,33 +60,33 @@ function App() {
       if (!matchesSearch) return false;
 
       // Status / Favorite filter
-      if (activeStatusFilter === "FAVORITES") {
+      if (activeStatusFilter === 'FAVORITES') {
         if (!game.isFavorite) return false;
-      } else if (activeStatusFilter !== "ALL") {
+      } else if (activeStatusFilter !== 'ALL') {
         if (game.status !== activeStatusFilter) return false;
       }
 
       // Platform filter
-      if (activePlatformFilter !== "ALL") {
+      if (activePlatformFilter !== 'ALL') {
         const pLower = game.platform.toLowerCase();
         if (
-          activePlatformFilter === "PC" &&
-          !(pLower.includes("pc") || pLower.includes("steam") || pLower.includes("windows"))
+          activePlatformFilter === 'PC' &&
+          !(pLower.includes('pc') || pLower.includes('steam') || pLower.includes('windows'))
         ) {
           return false;
         }
         if (
-          activePlatformFilter === "PLAYSTATION" &&
-          !(pLower.includes("ps") || pLower.includes("playstation"))
+          activePlatformFilter === 'PLAYSTATION' &&
+          !(pLower.includes('ps') || pLower.includes('playstation'))
         ) {
           return false;
         }
-        if (activePlatformFilter === "XBOX" && !pLower.includes("xbox")) {
+        if (activePlatformFilter === 'XBOX' && !pLower.includes('xbox')) {
           return false;
         }
         if (
-          activePlatformFilter === "NINTENDO" &&
-          !(pLower.includes("switch") || pLower.includes("nintendo"))
+          activePlatformFilter === 'NINTENDO' &&
+          !(pLower.includes('switch') || pLower.includes('nintendo'))
         ) {
           return false;
         }
@@ -300,622 +97,75 @@ function App() {
   }, [games, searchTerm, activePlatformFilter, activeStatusFilter]);
 
   return (
-    <ThemeContext.Provider value={colorMode}>
+    <ThemeContext.Provider value={themeContextValue}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
 
         {/* Ambient Top Glow Light */}
         <Box
           sx={{
-            position: "fixed",
+            position: 'fixed',
             top: 0,
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "80vw",
-            height: "350px",
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '80vw',
+            height: '350px',
             background: isDark
-              ? "radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.18) 0%, rgba(56, 189, 248, 0.08) 45%, transparent 75%)"
-              : "radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.08) 0%, rgba(56, 189, 248, 0.04) 45%, transparent 75%)",
-            pointerEvents: "none",
+              ? 'radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.18) 0%, rgba(56, 189, 248, 0.08) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.08) 0%, rgba(56, 189, 248, 0.04) 45%, transparent 75%)',
+            pointerEvents: 'none',
             zIndex: 0,
           }}
         />
 
         {/* Floating Glassmorphic Navigation Bar */}
-        <AppBar
-          position="sticky"
-          elevation={0}
-          sx={{
-            bgcolor: isDark ? "rgba(11, 15, 25, 0.8)" : "rgba(255, 255, 255, 0.8)",
-            backdropFilter: "blur(20px)",
-            borderBottom: "1px solid",
-            borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
-            color: "text.primary",
-            zIndex: 1100,
-          }}
-        >
-          <Container maxWidth="xl">
-            <Toolbar sx={{ height: 80, px: { xs: 0 } }}>
-              {/* Logo & Brand */}
-              <Box display="flex" alignItems="center" gap={1.5} sx={{ cursor: "pointer" }}>
-                <Box
-                  sx={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: "14px",
-                    background: "linear-gradient(135deg, #6366f1 0%, #38bdf8 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "white",
-                    boxShadow: "0 6px 20px rgba(99, 102, 241, 0.4)",
-                    transition: "transform 0.25s ease",
-                    "&:hover": { transform: "scale(1.05) rotate(-3deg)" },
-                  }}
-                >
-                  <SportsEsportsRoundedIcon sx={{ fontSize: 26 }} />
-                </Box>
-                <Box>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 900,
-                        letterSpacing: "-0.5px",
-                        background: isDark
-                          ? "linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%)"
-                          : "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                      }}
-                    >
-                      GameDex
-                    </Typography>
-                    <Chip
-                      label="VAULT"
-                      size="small"
-                      sx={{
-                        height: 20,
-                        fontSize: "0.65rem",
-                        fontWeight: 800,
-                        letterSpacing: 1,
-                        bgcolor: "rgba(99, 102, 241, 0.15)",
-                        color: "primary.main",
-                        border: "1px solid rgba(99, 102, 241, 0.3)",
-                        borderRadius: "6px",
-                      }}
-                    />
-                  </Box>
-                </Box>
-              </Box>
-
-              <Box sx={{ flexGrow: 1 }} />
-
-              {/* Integrated Search Bar */}
-              <Box
-                sx={{
-                  display: { xs: "none", sm: "flex" },
-                  alignItems: "center",
-                  bgcolor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-                  border: "1px solid",
-                  borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
-                  borderRadius: "14px",
-                  px: 2,
-                  py: 0.5,
-                  width: { sm: 260, md: 360 },
-                  transition: "all 0.25s ease",
-                  "&:focus-within": {
-                    bgcolor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 1)",
-                    borderColor: "primary.main",
-                    boxShadow: "0 0 0 3px rgba(99, 102, 241, 0.15)",
-                    width: { sm: 300, md: 400 },
-                  },
-                }}
-              >
-                <TextField
-                  fullWidth
-                  variant="standard"
-                  placeholder="Buscar juegos o plataformas..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  InputProps={{
-                    disableUnderline: true,
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchRoundedIcon sx={{ color: "text.secondary", fontSize: 20 }} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: searchTerm ? (
-                      <InputAdornment position="end">
-                        <IconButton size="small" onClick={() => setSearchTerm("")}>
-                          <CloseRoundedIcon sx={{ fontSize: 16 }} />
-                        </IconButton>
-                      </InputAdornment>
-                    ) : null,
-                    }}
-                />
-              </Box>
-
-              {/* Header Actions */}
-              <Box display="flex" alignItems="center" gap={1.5} ml={2}>
-                <Tooltip title="Sincronizar carátulas faltantes desde Steam" arrow>
-                  <span>
-                    <IconButton
-                      onClick={handleSyncCovers}
-                      disabled={isSyncing}
-                      sx={{
-                        borderRadius: "12px",
-                        bgcolor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
-                        border: "1px solid",
-                        borderColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
-                        color: isDark ? "#38bdf8" : "#0284c7",
-                        transition: "all 0.25s ease",
-                        "&:hover": {
-                          bgcolor: isDark ? "rgba(56, 189, 248, 0.15)" : "rgba(2, 132, 199, 0.1)",
-                        },
-                      }}
-                    >
-                      <SyncRoundedIcon
-                        sx={{
-                          fontSize: 20,
-                          animation: isSyncing ? "spin 1s linear infinite" : "none",
-                          "@keyframes spin": {
-                            "0%": { transform: "rotate(0deg)" },
-                            "100%": { transform: "rotate(360deg)" },
-                          },
-                        }}
-                      />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-
-                <Button
-                  variant="contained"
-                  onClick={() => setOpenAddDialog(true)}
-                  startIcon={<AddRoundedIcon />}
-                  sx={{
-                    display: { xs: "none", md: "inline-flex" },
-                    background: "linear-gradient(135deg, #6366f1 0%, #38bdf8 100%)",
-                    boxShadow: "0 4px 15px rgba(99, 102, 241, 0.35)",
-                    borderRadius: "12px",
-                    px: 2.5,
-                    py: 1,
-                    fontWeight: 700,
-                    fontSize: "0.9rem",
-                    transition: "all 0.25s ease",
-                    "&:hover": {
-                      background: "linear-gradient(135deg, #4f46e5 0%, #0284c7 100%)",
-                      boxShadow: "0 6px 20px rgba(99, 102, 241, 0.5)",
-                      transform: "translateY(-1px)",
-                    },
-                  }}
-                >
-                  Nuevo Juego
-                </Button>
-
-                <ThemeToggle />
-              </Box>
-            </Toolbar>
-
-            {/* Mobile Search Input */}
-            <Box sx={{ display: { xs: "block", sm: "none" }, pb: 2 }}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="Buscar juegos..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchRoundedIcon fontSize="small" sx={{ color: "text.secondary" }} />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "12px",
-                    bgcolor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
-                  },
-                }}
-              />
-            </Box>
-          </Container>
-        </AppBar>
+        <Navbar
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          onClearSearch={() => setSearchTerm('')}
+          isSyncing={isSyncing}
+          onSyncCovers={handleSyncCovers}
+          onOpenAddGame={() => setOpenAddDialog(true)}
+          isDark={isDark}
+        />
 
         {/* Main Content */}
-        <Container maxWidth="xl" sx={{ mt: 4, mb: 12, position: "relative", zIndex: 1 }}>
-          {/* Hero Banner Section */}
-          <Paper
-            elevation={0}
-            sx={{
-              p: { xs: 3, md: 5 },
-              mb: 4,
-              borderRadius: "28px",
-              bgcolor: isDark ? "rgba(17, 24, 39, 0.7)" : "rgba(255, 255, 255, 0.8)",
-              backdropFilter: "blur(20px)",
-              border: "1px solid",
-              borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
-              boxShadow: isDark
-                ? "0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08)"
-                : "0 20px 40px -15px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1)",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            {/* Subtle decorative glow element */}
-            <Box
-              sx={{
-                position: "absolute",
-                top: -50,
-                right: -50,
-                width: 250,
-                height: 250,
-                borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)",
-                pointerEvents: "none",
-              }}
-            />
-
-            <Box
-              display="flex"
-              flexDirection={{ xs: "column", md: "row" }}
-              justifyContent="space-between"
-              alignItems={{ xs: "flex-start", md: "center" }}
-              gap={3}
-            >
-              <Box>
-                <Box display="flex" alignItems="center" gap={1.2} mb={1}>
-                  <Chip
-                    icon={<AutoAwesomeRoundedIcon sx={{ fontSize: 16 }} />}
-                    label="LIBRERÍA PERSONAL"
-                    size="small"
-                    sx={{
-                      height: 26,
-                      fontSize: "0.72rem",
-                      fontWeight: 800,
-                      letterSpacing: 1,
-                      bgcolor: isDark ? "rgba(56, 189, 248, 0.12)" : "rgba(2, 132, 199, 0.08)",
-                      color: isDark ? "#38bdf8" : "#0284c7",
-                      border: "1px solid",
-                      borderColor: isDark ? "rgba(56, 189, 248, 0.25)" : "rgba(2, 132, 199, 0.2)",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </Box>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontSize: { xs: "1.8rem", sm: "2.4rem", md: "2.8rem" },
-                    fontWeight: 900,
-                    letterSpacing: "-0.5px",
-                    lineHeight: 1.15,
-                    mb: 1,
-                    background: isDark
-                      ? "linear-gradient(135deg, #ffffff 20%, #94a3b8 100%)"
-                      : "linear-gradient(135deg, #0f172a 20%, #475569 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                >
-                  {searchTerm ? "Resultados de Búsqueda" : "Tu Colección Gamer"}
-                </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 650, fontSize: "1.05rem" }}>
-                  Catálogo centralizado de tus videojuegos con carátulas dinámicas sincronizadas en tiempo real desde Steam.
-                </Typography>
-              </Box>
-
-              {/* Gamer stats badges */}
-              <Box display="flex" alignItems="center" gap={1.2} flexWrap="wrap">
-                <Paper
-                  elevation={0}
-                  sx={{
-                    px: 2,
-                    py: 1.2,
-                    borderRadius: "14px",
-                    bgcolor: isDark ? "rgba(255, 255, 255, 0.04)" : "rgba(0, 0, 0, 0.03)",
-                    border: "1px solid",
-                    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
-                    textAlign: "center",
-                    minWidth: 65,
-                  }}
-                >
-                  <Typography variant="h5" fontWeight="900" color="primary.main" sx={{ lineHeight: 1 }}>
-                    {stats.total}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
-                    Total
-                  </Typography>
-                </Paper>
-
-                <Paper
-                  elevation={0}
-                  sx={{
-                    px: 2,
-                    py: 1.2,
-                    borderRadius: "14px",
-                    bgcolor: isDark ? "rgba(34, 197, 94, 0.08)" : "rgba(34, 197, 94, 0.06)",
-                    border: "1px solid",
-                    borderColor: isDark ? "rgba(34, 197, 94, 0.2)" : "rgba(34, 197, 94, 0.15)",
-                    textAlign: "center",
-                    minWidth: 65,
-                  }}
-                >
-                  <Typography variant="h5" fontWeight="900" sx={{ color: "#22c55e", lineHeight: 1 }}>
-                    {stats.playing}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
-                    Jugando
-                  </Typography>
-                </Paper>
-
-                <Paper
-                  elevation={0}
-                  sx={{
-                    px: 2,
-                    py: 1.2,
-                    borderRadius: "14px",
-                    bgcolor: isDark ? "rgba(245, 158, 11, 0.08)" : "rgba(245, 158, 11, 0.06)",
-                    border: "1px solid",
-                    borderColor: isDark ? "rgba(245, 158, 11, 0.2)" : "rgba(245, 158, 11, 0.15)",
-                    textAlign: "center",
-                    minWidth: 65,
-                  }}
-                >
-                  <Typography variant="h5" fontWeight="900" sx={{ color: "#f59e0b", lineHeight: 1 }}>
-                    {stats.completed}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
-                    Completados
-                  </Typography>
-                </Paper>
-
-                <Paper
-                  elevation={0}
-                  sx={{
-                    px: 2,
-                    py: 1.2,
-                    borderRadius: "14px",
-                    bgcolor: isDark ? "rgba(234, 179, 8, 0.08)" : "rgba(234, 179, 8, 0.06)",
-                    border: "1px solid",
-                    borderColor: isDark ? "rgba(234, 179, 8, 0.2)" : "rgba(234, 179, 8, 0.15)",
-                    textAlign: "center",
-                    minWidth: 65,
-                  }}
-                >
-                  <Typography variant="h5" fontWeight="900" sx={{ color: "#eab308", lineHeight: 1 }}>
-                    {stats.favorites}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
-                    Favoritos
-                  </Typography>
-                </Paper>
-              </Box>
-            </Box>
-
-            {/* Quick Interactive Status Filters */}
-            <Box
-              display="flex"
-              alignItems="center"
-              gap={1}
-              mt={3}
-              pt={2.5}
-              borderTop="1px solid"
-              borderColor={isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.06)"}
-              flexWrap="wrap"
-            >
-              <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ mr: 1, textTransform: "uppercase", letterSpacing: 1 }}>
-                Estado:
-              </Typography>
-              {STATUS_FILTERS.map((f) => {
-                const isActive = activeStatusFilter === f.id;
-                return (
-                  <Chip
-                    key={f.id}
-                    label={f.label}
-                    onClick={() => setActiveStatusFilter(f.id)}
-                    clickable
-                    sx={{
-                      height: 32,
-                      px: 0.8,
-                      borderRadius: "10px",
-                      fontWeight: isActive ? 800 : 500,
-                      fontSize: "0.85rem",
-                      bgcolor: isActive
-                        ? `${f.color}25`
-                        : isDark
-                        ? "rgba(255, 255, 255, 0.04)"
-                        : "rgba(0, 0, 0, 0.04)",
-                      color: isActive ? f.color : "text.secondary",
-                      border: "1px solid",
-                      borderColor: isActive ? f.color : "transparent",
-                      boxShadow: isActive ? `0 0 12px ${f.color}30` : "none",
-                      transition: "all 0.2s ease",
-                      "&:hover": {
-                        bgcolor: `${f.color}20`,
-                        color: f.color,
-                      },
-                    }}
-                  />
-                );
-              })}
-
-              {activeStatusFilter !== "ALL" && (
-                <Button
-                  size="small"
-                  onClick={() => setActiveStatusFilter("ALL")}
-                  sx={{ color: "text.secondary", fontSize: "0.75rem", minWidth: "auto", px: 1 }}
-                >
-                  Limpiar estado
-                </Button>
-              )}
-            </Box>
-
-            {/* Quick Interactive Platform Filters */}
-            <Box
-              display="flex"
-              alignItems="center"
-              gap={1}
-              mt={1.5}
-              flexWrap="wrap"
-            >
-              <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ mr: 1, textTransform: "uppercase", letterSpacing: 1 }}>
-                Plataforma:
-              </Typography>
-              {PLATFORM_FILTERS.map((f) => {
-                const isActive = activePlatformFilter === f.id;
-                return (
-                  <Chip
-                    key={f.id}
-                    label={f.label}
-                    onClick={() => setActivePlatformFilter(f.id)}
-                    clickable
-                    sx={{
-                      height: 32,
-                      px: 0.8,
-                      borderRadius: "10px",
-                      fontWeight: isActive ? 800 : 500,
-                      fontSize: "0.85rem",
-                      bgcolor: isActive
-                        ? `${f.color}25`
-                        : isDark
-                        ? "rgba(255, 255, 255, 0.04)"
-                        : "rgba(0, 0, 0, 0.04)",
-                      color: isActive ? f.color : "text.secondary",
-                      border: "1px solid",
-                      borderColor: isActive ? f.color : "transparent",
-                      boxShadow: isActive ? `0 0 12px ${f.color}30` : "none",
-                      transition: "all 0.2s ease",
-                      "&:hover": {
-                        bgcolor: `${f.color}20`,
-                        color: f.color,
-                      },
-                    }}
-                  />
-                );
-              })}
-
-              {activePlatformFilter !== "ALL" && (
-                <Button
-                  size="small"
-                  onClick={() => setActivePlatformFilter("ALL")}
-                  sx={{ color: "text.secondary", fontSize: "0.75rem", minWidth: "auto", px: 1 }}
-                >
-                  Limpiar filtro
-                </Button>
-              )}
-            </Box>
-          </Paper>
+        <Container maxWidth="xl" sx={{ mt: 4, mb: 12, position: 'relative', zIndex: 1 }}>
+          {/* Hero Banner with Stats and Filters */}
+          <HeroStats
+            stats={stats}
+            searchTerm={searchTerm}
+            activeStatusFilter={activeStatusFilter}
+            activePlatformFilter={activePlatformFilter}
+            onSelectStatusFilter={setActiveStatusFilter}
+            onSelectPlatformFilter={setActivePlatformFilter}
+            isDark={isDark}
+          />
 
           {/* Games Grid or Empty States */}
           {loading ? (
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" py={12}>
-              <CircularProgress size={56} thickness={4} sx={{ color: "primary.main", mb: 2 }} />
+              <CircularProgress size={56} thickness={4} sx={{ color: 'primary.main', mb: 2 }} />
               <Typography variant="body2" color="text.secondary" fontWeight="600">
                 Sincronizando biblioteca...
               </Typography>
             </Box>
           ) : filteredGames.length === 0 ? (
-            <Paper
-              elevation={0}
-              sx={{
-                p: { xs: 6, md: 10 },
-                textAlign: "center",
-                borderRadius: "28px",
-                bgcolor: isDark ? "rgba(17, 24, 39, 0.5)" : "rgba(255, 255, 255, 0.6)",
-                backdropFilter: "blur(12px)",
-                border: "2px dashed",
-                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              <Box
-                sx={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: "24px",
-                  bgcolor: isDark ? "rgba(99, 102, 241, 0.1)" : "rgba(99, 102, 241, 0.08)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mx: "auto",
-                  mb: 3,
-                  color: "primary.main",
-                }}
-              >
-                <SportsEsportsRoundedIcon sx={{ fontSize: 44 }} />
-              </Box>
-
-              <Typography variant="h5" fontWeight="800" sx={{ mb: 1 }}>
-                {searchTerm
-                  ? `Sin resultados para "${searchTerm}"`
-                  : activeStatusFilter !== "ALL"
-                  ? `No tienes juegos en ${
-                      activeStatusFilter === "FAVORITES"
-                        ? "Favoritos"
-                        : STATUS_FILTERS.find((s) => s.id === activeStatusFilter)?.label || activeStatusFilter
-                    }`
-                  : activePlatformFilter !== "ALL"
-                  ? `No tienes juegos registrados en ${activePlatformFilter}`
-                  : "Tu colección está vacía 🎮"}
-              </Typography>
-
-              <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 460, mx: "auto", mb: 4 }}>
-                {searchTerm
-                  ? "Intenta buscar con otro término o revisa la ortografía."
-                  : "Agrega tu primer título para comenzar a organizar tu biblioteca y cargar carátulas en alta resolución."}
-              </Typography>
-
-              {searchTerm ? (
-                <Button
-                  variant="outlined"
-                  onClick={() => setSearchTerm("")}
-                  sx={{ borderRadius: "12px", px: 3, py: 1 }}
-                >
-                  Limpiar Búsqueda
-                </Button>
-              ) : (
-                <Button
-                  variant="contained"
-                  onClick={() => setOpenAddDialog(true)}
-                  startIcon={<AddRoundedIcon />}
-                  sx={{
-                    borderRadius: "14px",
-                    px: 3.5,
-                    py: 1.2,
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #6366f1 0%, #38bdf8 100%)",
-                    boxShadow: "0 6px 20px rgba(99, 102, 241, 0.4)",
-                  }}
-                >
-                  Añadir Mi Primer Juego
-                </Button>
-              )}
-            </Paper>
+            <EmptyState
+              searchTerm={searchTerm}
+              activeStatusFilter={activeStatusFilter}
+              activePlatformFilter={activePlatformFilter}
+              onClearSearch={() => setSearchTerm('')}
+              onOpenAddGame={() => setOpenAddDialog(true)}
+              isDark={isDark}
+            />
           ) : (
-            <Grid container spacing={{ xs: 2.5, sm: 3, md: 3.5 }}>
-              {filteredGames.map((game) => (
-                <Grid
-                  size={{ xs: 6, sm: 4, md: 3, lg: 2.4, xl: 2 }}
-                  key={game.id}
-                >
-                  <GameCard
-                    title={game.title}
-                    platform={game.platform}
-                    coverUrl={game.coverUrl}
-                    status={game.status}
-                    rating={game.rating}
-                    isFavorite={game.isFavorite}
-                    hoursPlayed={game.hoursPlayed}
-                    notes={game.notes}
-                    onEdit={() => setEditingGame(game)}
-                    onDelete={() => handleDeleteGame(game.id)}
-                    onToggleFavorite={() =>
-                      handleToggleFavorite(game.id, game.isFavorite)
-                    }
-                  />
-                </Grid>
-              ))}
-            </Grid>
+            <GameGrid
+              games={filteredGames}
+              onEdit={setEditingGame}
+              onDelete={handleDeleteGame}
+              onToggleFavorite={handleToggleFavorite}
+            />
           )}
 
           {/* Floating Action Button (FAB) */}
@@ -924,18 +174,18 @@ function App() {
               color="primary"
               onClick={() => setOpenAddDialog(true)}
               sx={{
-                position: "fixed",
+                position: 'fixed',
                 bottom: 36,
                 right: 36,
                 width: 64,
                 height: 64,
-                background: "linear-gradient(135deg, #6366f1 0%, #38bdf8 100%)",
-                boxShadow: "0 10px 30px rgba(99, 102, 241, 0.5)",
-                transition: "all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
-                "&:hover": {
-                  background: "linear-gradient(135deg, #4f46e5 0%, #0284c7 100%)",
-                  boxShadow: "0 15px 35px rgba(99, 102, 241, 0.7)",
-                  transform: "scale(1.08) rotate(90deg)",
+                background: 'linear-gradient(135deg, #6366f1 0%, #38bdf8 100%)',
+                boxShadow: '0 10px 30px rgba(99, 102, 241, 0.5)',
+                transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #4f46e5 0%, #0284c7 100%)',
+                  boxShadow: '0 15px 35px rgba(99, 102, 241, 0.7)',
+                  transform: 'scale(1.08) rotate(90deg)',
                 },
                 zIndex: 1000,
               }}
@@ -962,16 +212,16 @@ function App() {
           <Snackbar
             open={snackbar.open}
             autoHideDuration={4000}
-            onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            onClose={closeSnackbar}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           >
             <Alert
-              onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+              onClose={closeSnackbar}
               severity={snackbar.severity}
               variant="filled"
               sx={{
-                borderRadius: "14px",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+                borderRadius: '14px',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
                 fontWeight: 600,
               }}
             >
