@@ -1,13 +1,47 @@
 import axios from "axios";
 
+export type GameStatus =
+  | "BACKLOG"
+  | "PLAYING"
+  | "COMPLETED"
+  | "ABANDONED"
+  | "WISHLIST";
+
 export interface Game {
   id: number;
   title: string;
   platform: string;
   coverUrl?: string | null;
   cover?: string;
+  status: GameStatus;
+  rating?: number | null;
+  isFavorite: boolean;
+  hoursPlayed?: number | null;
+  notes?: string | null;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface CreateGameData {
+  title: string;
+  platform: string;
+  coverUrl?: string | null;
+  status?: GameStatus;
+  rating?: number | null;
+  isFavorite?: boolean;
+  hoursPlayed?: number | null;
+  notes?: string | null;
+}
+
+export interface UpdateGameData {
+  title?: string;
+  platform?: string;
+  coverUrl?: string | null;
+  status?: GameStatus;
+  rating?: number | null;
+  isFavorite?: boolean;
+  hoursPlayed?: number | null;
+  notes?: string | null;
 }
 
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
@@ -34,24 +68,31 @@ export const getGames = async (): Promise<Game[]> => {
 };
 
 export const createGame = async (
-  title: string,
-  platform: string,
+  input: CreateGameData | string,
+  platform?: string,
   coverUrl?: string | null,
 ): Promise<Game> => {
-  const { data } = await api.post<Game>("/games", {
-    title,
-    platform,
-    ...(coverUrl ? { coverUrl } : {}),
-  });
+  const payload =
+    typeof input === "string"
+      ? { title: input, platform: platform || "PC", coverUrl }
+      : input;
+  const { data } = await api.post<Game>("/games", payload);
   return data;
 };
 
 export const updateGame = async (
   id: number,
-  data: { title?: string; platform?: string; coverUrl?: string | null },
+  data: UpdateGameData,
 ): Promise<Game> => {
   const { data: updated } = await api.patch<Game>(`/games/${id}`, data);
   return updated;
+};
+
+export const toggleFavorite = async (
+  id: number,
+  currentFavorite: boolean,
+): Promise<Game> => {
+  return updateGame(id, { isFavorite: !currentFavorite });
 };
 
 export const deleteGame = async (id: number): Promise<void> => {

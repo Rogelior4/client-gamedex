@@ -40,11 +40,23 @@ import {
   updateGame,
   deleteGame,
   syncMissingCovers,
+  toggleFavorite,
   Game,
+  CreateGameData,
+  UpdateGameData,
 } from "./services/game.service";
 
-const PLATFORM_FILTERS = [
+const STATUS_FILTERS = [
   { id: "ALL", label: "Todos", color: "#6366f1" },
+  { id: "FAVORITES", label: "⭐ Favoritos", color: "#f59e0b" },
+  { id: "PLAYING", label: "Jugando", color: "#22c55e" },
+  { id: "COMPLETED", label: "Completados", color: "#eab308" },
+  { id: "BACKLOG", label: "Pendientes", color: "#818cf8" },
+  { id: "WISHLIST", label: "Deseados", color: "#ec4899" },
+];
+
+const PLATFORM_FILTERS = [
+  { id: "ALL", label: "Todas", color: "#6366f1" },
   { id: "PC", label: "PC", color: "#38bdf8" },
   { id: "PLAYSTATION", label: "PlayStation", color: "#818cf8" },
   { id: "XBOX", label: "Xbox", color: "#4ade80" },
@@ -134,6 +146,7 @@ function App() {
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activePlatformFilter, setActivePlatformFilter] = useState("ALL");
+  const [activeStatusFilter, setActiveStatusFilter] = useState("ALL");
 
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -166,32 +179,36 @@ function App() {
 
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const handleAddGame = async (
-    title: string,
-    platform: string,
-    coverUrl?: string,
-  ) => {
+  const handleAddGame = async (data: CreateGameData) => {
     try {
-      await createGame(title, platform, coverUrl);
-      showSnackbar(`"${title}" añadido a tu colección`, "success");
+      await createGame(data);
+      showSnackbar(`"${data.title}" añadido a tu colección`, "success");
       loadGames();
     } catch (error) {
       showSnackbar("Error al crear el videojuego", "error");
     }
   };
 
-  const handleUpdateGame = async (
-    id: number,
-    title: string,
-    platform: string,
-    coverUrl?: string | null,
-  ) => {
+  const handleUpdateGame = async (id: number, data: UpdateGameData) => {
     try {
-      await updateGame(id, { title, platform, coverUrl });
-      showSnackbar(`"${title}" actualizado correctamente`, "success");
+      await updateGame(id, data);
+      showSnackbar(`"${data.title || "Juego"}" actualizado correctamente`, "success");
       loadGames();
     } catch (error) {
       showSnackbar("Error al actualizar el juego", "error");
+    }
+  };
+
+  const handleToggleFavorite = async (id: number, current: boolean) => {
+    try {
+      await toggleFavorite(id, current);
+      showSnackbar(
+        current ? "Eliminado de favoritos" : "⭐ Marcado como favorito",
+        "success",
+      );
+      loadGames();
+    } catch (error) {
+      showSnackbar("Error al actualizar favorito", "error");
     }
   };
 
@@ -224,7 +241,19 @@ function App() {
     }
   };
 
-  // Filter games based on search and platform
+  // Stats calculation
+  const stats = useMemo(() => {
+    return {
+      total: games.length,
+      playing: games.filter((g) => g.status === "PLAYING").length,
+      completed: games.filter((g) => g.status === "COMPLETED").length,
+      backlog: games.filter((g) => g.status === "BACKLOG").length,
+      favorites: games.filter((g) => g.isFavorite).length,
+      platforms: new Set(games.map((g) => g.platform.trim().toLowerCase())).size,
+    };
+  }, [games]);
+
+  // Filter games based on search, status, and platform
   const filteredGames = useMemo(() => {
     return games.filter((game) => {
       const matchesSearch =
@@ -233,23 +262,42 @@ function App() {
 
       if (!matchesSearch) return false;
 
-      if (activePlatformFilter === "ALL") return true;
+      // Status / Favorite filter
+      if (activeStatusFilter === "FAVORITES") {
+        if (!game.isFavorite) return false;
+      } else if (activeStatusFilter !== "ALL") {
+        if (game.status !== activeStatusFilter) return false;
+      }
 
-      const pLower = game.platform.toLowerCase();
-      if (activePlatformFilter === "PC") return pLower.includes("pc") || pLower.includes("steam") || pLower.includes("windows");
-      if (activePlatformFilter === "PLAYSTATION") return pLower.includes("ps") || pLower.includes("playstation");
-      if (activePlatformFilter === "XBOX") return pLower.includes("xbox");
-      if (activePlatformFilter === "NINTENDO") return pLower.includes("switch") || pLower.includes("nintendo");
+      // Platform filter
+      if (activePlatformFilter !== "ALL") {
+        const pLower = game.platform.toLowerCase();
+        if (
+          activePlatformFilter === "PC" &&
+          !(pLower.includes("pc") || pLower.includes("steam") || pLower.includes("windows"))
+        ) {
+          return false;
+        }
+        if (
+          activePlatformFilter === "PLAYSTATION" &&
+          !(pLower.includes("ps") || pLower.includes("playstation"))
+        ) {
+          return false;
+        }
+        if (activePlatformFilter === "XBOX" && !pLower.includes("xbox")) {
+          return false;
+        }
+        if (
+          activePlatformFilter === "NINTENDO" &&
+          !(pLower.includes("switch") || pLower.includes("nintendo"))
+        ) {
+          return false;
+        }
+      }
 
       return true;
     });
-  }, [games, searchTerm, activePlatformFilter]);
-
-  // Unique platforms count
-  const platformCount = useMemo(() => {
-    const set = new Set(games.map((g) => g.platform.trim().toLowerCase()));
-    return set.size;
-  }, [games]);
+  }, [games, searchTerm, activePlatformFilter, activeStatusFilter]);
 
   return (
     <ThemeContext.Provider value={colorMode}>
@@ -557,48 +605,150 @@ function App() {
                 </Typography>
               </Box>
 
-              {/* Stats badges */}
-              <Box display="flex" alignItems="center" gap={1.5} flexWrap="wrap">
+              {/* Gamer stats badges */}
+              <Box display="flex" alignItems="center" gap={1.2} flexWrap="wrap">
                 <Paper
                   elevation={0}
                   sx={{
-                    px: 2.5,
-                    py: 1.5,
-                    borderRadius: "16px",
+                    px: 2,
+                    py: 1.2,
+                    borderRadius: "14px",
                     bgcolor: isDark ? "rgba(255, 255, 255, 0.04)" : "rgba(0, 0, 0, 0.03)",
                     border: "1px solid",
                     borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
                     textAlign: "center",
+                    minWidth: 65,
                   }}
                 >
                   <Typography variant="h5" fontWeight="900" color="primary.main" sx={{ lineHeight: 1 }}>
-                    {games.length}
+                    {stats.total}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary" fontWeight="600" sx={{ letterSpacing: 0.5 }}>
-                    Juegos
+                  <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
+                    Total
                   </Typography>
                 </Paper>
 
                 <Paper
                   elevation={0}
                   sx={{
-                    px: 2.5,
-                    py: 1.5,
-                    borderRadius: "16px",
-                    bgcolor: isDark ? "rgba(255, 255, 255, 0.04)" : "rgba(0, 0, 0, 0.03)",
+                    px: 2,
+                    py: 1.2,
+                    borderRadius: "14px",
+                    bgcolor: isDark ? "rgba(34, 197, 94, 0.08)" : "rgba(34, 197, 94, 0.06)",
                     border: "1px solid",
-                    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
+                    borderColor: isDark ? "rgba(34, 197, 94, 0.2)" : "rgba(34, 197, 94, 0.15)",
                     textAlign: "center",
+                    minWidth: 65,
                   }}
                 >
-                  <Typography variant="h5" fontWeight="900" color="secondary.main" sx={{ lineHeight: 1 }}>
-                    {platformCount}
+                  <Typography variant="h5" fontWeight="900" sx={{ color: "#22c55e", lineHeight: 1 }}>
+                    {stats.playing}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary" fontWeight="600" sx={{ letterSpacing: 0.5 }}>
-                    Plataformas
+                  <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
+                    Jugando
+                  </Typography>
+                </Paper>
+
+                <Paper
+                  elevation={0}
+                  sx={{
+                    px: 2,
+                    py: 1.2,
+                    borderRadius: "14px",
+                    bgcolor: isDark ? "rgba(245, 158, 11, 0.08)" : "rgba(245, 158, 11, 0.06)",
+                    border: "1px solid",
+                    borderColor: isDark ? "rgba(245, 158, 11, 0.2)" : "rgba(245, 158, 11, 0.15)",
+                    textAlign: "center",
+                    minWidth: 65,
+                  }}
+                >
+                  <Typography variant="h5" fontWeight="900" sx={{ color: "#f59e0b", lineHeight: 1 }}>
+                    {stats.completed}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
+                    Completados
+                  </Typography>
+                </Paper>
+
+                <Paper
+                  elevation={0}
+                  sx={{
+                    px: 2,
+                    py: 1.2,
+                    borderRadius: "14px",
+                    bgcolor: isDark ? "rgba(234, 179, 8, 0.08)" : "rgba(234, 179, 8, 0.06)",
+                    border: "1px solid",
+                    borderColor: isDark ? "rgba(234, 179, 8, 0.2)" : "rgba(234, 179, 8, 0.15)",
+                    textAlign: "center",
+                    minWidth: 65,
+                  }}
+                >
+                  <Typography variant="h5" fontWeight="900" sx={{ color: "#eab308", lineHeight: 1 }}>
+                    {stats.favorites}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
+                    Favoritos
                   </Typography>
                 </Paper>
               </Box>
+            </Box>
+
+            {/* Quick Interactive Status Filters */}
+            <Box
+              display="flex"
+              alignItems="center"
+              gap={1}
+              mt={3}
+              pt={2.5}
+              borderTop="1px solid"
+              borderColor={isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.06)"}
+              flexWrap="wrap"
+            >
+              <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ mr: 1, textTransform: "uppercase", letterSpacing: 1 }}>
+                Estado:
+              </Typography>
+              {STATUS_FILTERS.map((f) => {
+                const isActive = activeStatusFilter === f.id;
+                return (
+                  <Chip
+                    key={f.id}
+                    label={f.label}
+                    onClick={() => setActiveStatusFilter(f.id)}
+                    clickable
+                    sx={{
+                      height: 32,
+                      px: 0.8,
+                      borderRadius: "10px",
+                      fontWeight: isActive ? 800 : 500,
+                      fontSize: "0.85rem",
+                      bgcolor: isActive
+                        ? `${f.color}25`
+                        : isDark
+                        ? "rgba(255, 255, 255, 0.04)"
+                        : "rgba(0, 0, 0, 0.04)",
+                      color: isActive ? f.color : "text.secondary",
+                      border: "1px solid",
+                      borderColor: isActive ? f.color : "transparent",
+                      boxShadow: isActive ? `0 0 12px ${f.color}30` : "none",
+                      transition: "all 0.2s ease",
+                      "&:hover": {
+                        bgcolor: `${f.color}20`,
+                        color: f.color,
+                      },
+                    }}
+                  />
+                );
+              })}
+
+              {activeStatusFilter !== "ALL" && (
+                <Button
+                  size="small"
+                  onClick={() => setActiveStatusFilter("ALL")}
+                  sx={{ color: "text.secondary", fontSize: "0.75rem", minWidth: "auto", px: 1 }}
+                >
+                  Limpiar estado
+                </Button>
+              )}
             </Box>
 
             {/* Quick Interactive Platform Filters */}
@@ -606,14 +756,11 @@ function App() {
               display="flex"
               alignItems="center"
               gap={1}
-              mt={3.5}
-              pt={2.5}
-              borderTop="1px solid"
-              borderColor={isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.06)"}
+              mt={1.5}
               flexWrap="wrap"
             >
               <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ mr: 1, textTransform: "uppercase", letterSpacing: 1 }}>
-                Filtrar:
+                Plataforma:
               </Typography>
               {PLATFORM_FILTERS.map((f) => {
                 const isActive = activePlatformFilter === f.id;
@@ -701,6 +848,12 @@ function App() {
               <Typography variant="h5" fontWeight="800" sx={{ mb: 1 }}>
                 {searchTerm
                   ? `Sin resultados para "${searchTerm}"`
+                  : activeStatusFilter !== "ALL"
+                  ? `No tienes juegos en ${
+                      activeStatusFilter === "FAVORITES"
+                        ? "Favoritos"
+                        : STATUS_FILTERS.find((s) => s.id === activeStatusFilter)?.label || activeStatusFilter
+                    }`
                   : activePlatformFilter !== "ALL"
                   ? `No tienes juegos registrados en ${activePlatformFilter}`
                   : "Tu colección está vacía 🎮"}
@@ -749,8 +902,16 @@ function App() {
                     title={game.title}
                     platform={game.platform}
                     coverUrl={game.coverUrl}
+                    status={game.status}
+                    rating={game.rating}
+                    isFavorite={game.isFavorite}
+                    hoursPlayed={game.hoursPlayed}
+                    notes={game.notes}
                     onEdit={() => setEditingGame(game)}
                     onDelete={() => handleDeleteGame(game.id)}
+                    onToggleFavorite={() =>
+                      handleToggleFavorite(game.id, game.isFavorite)
+                    }
                   />
                 </Grid>
               ))}
