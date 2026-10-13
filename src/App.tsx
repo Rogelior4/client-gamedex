@@ -20,6 +20,7 @@ import { EmptyState } from './components/games/EmptyState';
 import AddGameDialog from './components/games/AddGameDialog';
 import EditGameDialog from './components/games/EditGameDialog';
 import { DeleteGameDialog } from './components/games/DeleteGameDialog';
+import { BackupDialog } from './components/games/BackupDialog';
 
 import { ThemeContext } from './theme/ThemeContext';
 import { useColorMode } from './theme/useColorMode';
@@ -42,10 +43,12 @@ function App() {
     handleDeleteGame,
     handleToggleFavorite,
     handleSyncCovers,
+    handleImportGames,
   } = useGames();
 
   // Local UI filters and dialogs
   const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [openBackupDialog, setOpenBackupDialog] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [deletingGame, setDeletingGame] = useState<Game | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -128,6 +131,7 @@ function App() {
           isSyncing={isSyncing}
           onSyncCovers={handleSyncCovers}
           onOpenAddGame={() => setOpenAddDialog(true)}
+          onOpenBackup={() => setOpenBackupDialog(true)}
           isDark={isDark}
         />
 
@@ -215,6 +219,13 @@ function App() {
             game={deletingGame}
             onClose={() => setDeletingGame(null)}
             onConfirm={handleDeleteGame}
+          />
+
+          <BackupDialog
+            open={openBackupDialog}
+            games={games}
+            onClose={() => setOpenBackupDialog(false)}
+            onImport={handleImportGames}
           />
 
           {/* Notification Snackbar */}
