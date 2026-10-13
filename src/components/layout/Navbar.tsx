@@ -17,6 +17,7 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SyncRoundedIcon from '@mui/icons-material/SyncRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import CloudSyncRoundedIcon from '@mui/icons-material/CloudSyncRounded';
 import { ThemeToggle } from '../common/ThemeToggle';
 
 interface NavbarProps {
@@ -26,6 +27,7 @@ interface NavbarProps {
   isSyncing: boolean;
   onSyncCovers: () => void;
   onOpenAddGame: () => void;
+  onOpenBackup: () => void;
   isDark: boolean;
 }
 
@@ -36,6 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   isSyncing,
   onSyncCovers,
   onOpenAddGame,
+  onOpenBackup,
   isDark,
 }) => {
   return (
@@ -184,6 +187,25 @@ export const Navbar: React.FC<NavbarProps> = ({
                   />
                 </IconButton>
               </span>
+            </Tooltip>
+
+            <Tooltip title="Copia de seguridad y exportar/importar colección" arrow>
+              <IconButton
+                onClick={onOpenBackup}
+                sx={{
+                  borderRadius: '12px',
+                  bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+                  border: '1px solid',
+                  borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+                  color: isDark ? '#818cf8' : '#4f46e5',
+                  transition: 'all 0.25s ease',
+                  '&:hover': {
+                    bgcolor: isDark ? 'rgba(99, 102, 241, 0.15)' : 'rgba(79, 70, 229, 0.1)',
+                  },
+                }}
+              >
+                <CloudSyncRoundedIcon sx={{ fontSize: 20 }} />
+              </IconButton>
             </Tooltip>
 
             <Button

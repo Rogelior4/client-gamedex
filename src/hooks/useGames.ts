@@ -6,6 +6,7 @@ import {
   deleteGame,
   syncMissingCovers,
   toggleFavorite,
+  importGames,
 } from '../services/game.service';
 import { Game, CreateGameData, UpdateGameData, GameStats } from '../types/game.types';
 
@@ -105,6 +106,21 @@ export const useGames = () => {
     }
   };
 
+  const handleImportGames = async (items: CreateGameData[]) => {
+    try {
+      setLoading(true);
+      const res = await importGames(items);
+      showSnackbar(`${res.count} videojuegos importados exitosamente`, 'success');
+      await loadGames();
+      return res;
+    } catch (error) {
+      showSnackbar('Error al importar videojuegos a la colección', 'error');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const stats: GameStats = useMemo(() => {
     return {
       total: games.length,
@@ -130,5 +146,6 @@ export const useGames = () => {
     handleDeleteGame,
     handleToggleFavorite,
     handleSyncCovers,
+    handleImportGames,
   };
 };
