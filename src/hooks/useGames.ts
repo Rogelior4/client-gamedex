@@ -80,7 +80,7 @@ export const useGames = () => {
   const handleSyncCovers = async () => {
     try {
       setIsSyncing(true);
-      showSnackbar('Sincronizando carátulas desde Steam...', 'success');
+      showSnackbar('Sincronizando carátulas multitienda...', 'success');
       const res = await syncMissingCovers();
       showSnackbar(
         res.updated > 0

@@ -22,7 +22,7 @@ import SportsEsportsRoundedIcon from '@mui/icons-material/SportsEsportsRounded';
 import FormatQuoteRoundedIcon from '@mui/icons-material/FormatQuoteRounded';
 import { useTheme } from '@mui/material/styles';
 import { Game } from '../../types/game.types';
-import { getPlatformStyle } from '../../utils/platformStyles';
+import { getPlatformStyle, getStoreSearchUrl, getLauncherUri } from '../../utils/platformStyles';
 import { getStatusStyle } from '../../utils/statusStyles';
 
 interface GameDetailModalProps {
@@ -50,7 +50,8 @@ export const GameDetailModal: React.FC<GameDetailModalProps> = ({
   const platformStyle = getPlatformStyle(game.platform, isDark);
   const statusStyle = getStatusStyle(game.status, isDark);
 
-  const steamSearchUrl = `https://store.steampowered.com/search/?term=${encodeURIComponent(game.title)}`;
+  const storeAction = getStoreSearchUrl(game.platform, game.title);
+  const launcherAction = getLauncherUri(game.platform);
 
   return (
     <Dialog
@@ -363,24 +364,49 @@ export const GameDetailModal: React.FC<GameDetailModalProps> = ({
                 Editar Juego
               </Button>
 
-              {/* View in Steam */}
+              {/* View in Platform Store */}
               <Button
                 component="a"
-                href={steamSearchUrl}
+                href={storeAction.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="outlined"
                 startIcon={<OpenInNewRoundedIcon />}
                 sx={{
                   borderRadius: '12px',
-                  borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
-                  color: 'text.secondary',
+                  borderColor: isDark ? `${platformStyle.color}40` : `${platformStyle.color}60`,
+                  color: platformStyle.color,
                   fontWeight: 700,
-                  '&:hover': { color: 'primary.main', borderColor: 'primary.main' },
+                  bgcolor: isDark ? `${platformStyle.color}10` : `${platformStyle.color}08`,
+                  '&:hover': {
+                    bgcolor: isDark ? `${platformStyle.color}20` : `${platformStyle.color}15`,
+                    borderColor: platformStyle.color,
+                  },
                 }}
               >
-                Ver en Steam
+                {storeAction.label}
               </Button>
+
+              {/* Open Desktop Launcher if available */}
+              {launcherAction && (
+                <Tooltip title={`Abrir cliente de ${launcherAction.label}`} arrow>
+                  <Button
+                    component="a"
+                    href={launcherAction.uri}
+                    variant="outlined"
+                    startIcon={<SportsEsportsRoundedIcon />}
+                    sx={{
+                      borderRadius: '12px',
+                      borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
+                      color: 'text.secondary',
+                      fontWeight: 700,
+                      '&:hover': { color: 'primary.main', borderColor: 'primary.main' },
+                    }}
+                  >
+                    {launcherAction.label}
+                  </Button>
+                </Tooltip>
+              )}
 
               {/* Delete Button */}
               <Tooltip title="Eliminar de la biblioteca" arrow>

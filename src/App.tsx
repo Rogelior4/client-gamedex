@@ -86,10 +86,25 @@ function App() {
       // Platform filter
       if (activePlatformFilter !== 'ALL') {
         const pLower = game.platform.toLowerCase();
+        if (activePlatformFilter === 'STEAM' && !pLower.includes('steam')) {
+          return false;
+        }
+        if (activePlatformFilter === 'EPIC' && !pLower.includes('epic')) {
+          return false;
+        }
         if (
-          activePlatformFilter === 'PC' &&
-          !(pLower.includes('pc') || pLower.includes('steam') || pLower.includes('windows'))
+          activePlatformFilter === 'NINTENDO' &&
+          !(
+            pLower.includes('switch') ||
+            pLower.includes('nintendo') ||
+            pLower.includes('ds') ||
+            pLower.includes('wii') ||
+            pLower.includes('gamecube')
+          )
         ) {
+          return false;
+        }
+        if (activePlatformFilter === 'XBOX' && !pLower.includes('xbox')) {
           return false;
         }
         if (
@@ -98,12 +113,36 @@ function App() {
         ) {
           return false;
         }
-        if (activePlatformFilter === 'XBOX' && !pLower.includes('xbox')) {
+        if (activePlatformFilter === 'RIOT' && !pLower.includes('riot')) {
           return false;
         }
         if (
-          activePlatformFilter === 'NINTENDO' &&
-          !(pLower.includes('switch') || pLower.includes('nintendo'))
+          activePlatformFilter === 'BATTLENET' &&
+          !(pLower.includes('battle') || pLower.includes('blizzard'))
+        ) {
+          return false;
+        }
+        if (
+          activePlatformFilter === 'EA' &&
+          !(pLower.includes('ea') || pLower.includes('origin'))
+        ) {
+          return false;
+        }
+        if (
+          activePlatformFilter === 'UBISOFT' &&
+          !(pLower.includes('ubisoft') || pLower.includes('uplay'))
+        ) {
+          return false;
+        }
+        if (
+          activePlatformFilter === 'PC' &&
+          !(
+            pLower.includes('pc') ||
+            pLower.includes('steam') ||
+            pLower.includes('epic') ||
+            pLower.includes('windows') ||
+            pLower.includes('gog')
+          )
         ) {
           return false;
         }

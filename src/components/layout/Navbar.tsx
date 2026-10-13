@@ -223,8 +223,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Header Right Actions */}
             <Box display="flex" alignItems="center" gap={1.2}>
-              {/* Sync Covers from Steam */}
-              <Tooltip title="Sincronizar carátulas de Steam en lote" arrow>
+              {/* Sync Covers from Multi-Store */}
+              <Tooltip title="Sincronizar carátulas multitienda (Steam, Epic, Nintendo, etc.)" arrow>
                 <span>
                   <IconButton
                     onClick={onSyncCovers}

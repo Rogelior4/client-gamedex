@@ -56,15 +56,37 @@ export interface FilterOption {
   color: string;
 }
 
-export interface SteamSuggestion {
-  id: number;
+export type PlatformSource =
+  | 'steam'
+  | 'epic'
+  | 'nintendo'
+  | 'riot'
+  | 'battlenet'
+  | 'ea'
+  | 'ubisoft'
+  | 'xbox'
+  | 'playstation'
+  | 'gog'
+  | 'rawg'
+  | 'all';
+
+export interface GameSuggestion {
+  id: string | number;
   title: string;
+  platform: string;
   coverUrl: string;
-  headerUrl: string;
-  tinyImage: string;
+  headerUrl?: string;
+  tinyImage?: string;
+  source: string;
+  releaseDate?: string;
+  storeUrl?: string;
+  launcherUri?: string;
   platforms?: {
     windows?: boolean;
     mac?: boolean;
     linux?: boolean;
   };
 }
+
+// Backwards-compatible alias for existing imports
+export type SteamSuggestion = GameSuggestion;

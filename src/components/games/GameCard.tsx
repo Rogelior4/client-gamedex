@@ -74,7 +74,7 @@ export default function GameCard({
     async function fetchCover() {
       try {
         setLoadingImage(true);
-        const url = await getGameCover(title);
+        const url = await getGameCover(title, platform);
         if (isMounted) setCoverUrl(url);
       } catch (e) {
         console.error('Cover fetch error for', title);

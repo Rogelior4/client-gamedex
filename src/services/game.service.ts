@@ -5,9 +5,17 @@ import {
   CreateGameData,
   UpdateGameData,
   SteamSuggestion,
+  GameSuggestion,
 } from "../types/game.types";
 
-export type { Game, GameStatus, CreateGameData, UpdateGameData, SteamSuggestion };
+export type {
+  Game,
+  GameStatus,
+  CreateGameData,
+  UpdateGameData,
+  SteamSuggestion,
+  GameSuggestion,
+};
 
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
@@ -69,15 +77,46 @@ export const syncMissingCovers = async (): Promise<{ total: number; updated: num
   return data;
 };
 
-export const getGameCover = async (title: string): Promise<string | null> => {
+export const getGameCover = async (
+  title: string,
+  platform?: string,
+): Promise<string | null> => {
   try {
-    const { data } = await api.get<{ url: string }>(`/games/cover/${title}`);
+    const { data } = await api.get<{ url: string }>(`/games/cover/${encodeURIComponent(title)}`, {
+      params: platform ? { platform } : undefined,
+    });
     return data.url;
   } catch (error) {
     return null;
   }
 };
 
+/**
+ * Búsqueda universal compatible con múltiples plataformas:
+ * Steam, Epic Games, Nintendo, Riot Games, Battle.net, EA App, Ubisoft Connect, Xbox, PlayStation, etc.
+ */
+export const searchGames = async (
+  term: string,
+  platform?: string,
+): Promise<GameSuggestion[]> => {
+  if (!term || term.trim().length === 0) return [];
+  try {
+    const { data } = await api.get<GameSuggestion[]>("/games/search", {
+      params: {
+        term: term.trim(),
+        ...(platform && platform !== "all" ? { platform } : {}),
+      },
+    });
+    return data;
+  } catch (error) {
+    // Si falla /games/search por alguna razón de red, fallback a search-steam
+    return searchSteamGames(term);
+  }
+};
+
+/**
+ * Retrocompatible: Búsqueda específica en Steam
+ */
 export const searchSteamGames = async (term: string): Promise<SteamSuggestion[]> => {
   if (!term || term.trim().length === 0) return [];
   try {
@@ -102,7 +141,7 @@ export const importGames = async (
 export const exportCollectionJSON = (games: Game[]) => {
   const exportData = {
     app: "GameDex",
-    version: "1.0",
+    version: "2.0",
     exportedAt: new Date().toISOString(),
     totalGames: games.length,
     games: games.map((g) => ({
@@ -152,5 +191,3 @@ export const exportCollectionCSV = (games: Game[]) => {
   link.click();
   URL.revokeObjectURL(url);
 };
-
-

@@ -89,7 +89,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 480, mx: 'auto', mb: 3.5, fontSize: '0.96rem' }}>
         {searchTerm
           ? 'Verifica los términos de búsqueda o prueba explorando por plataforma o estado.'
-          : 'Comienza agregando tu primer título para disfrutar de carátulas dinámicas de Steam y seguimiento de progreso.'}
+          : 'Comienza agregando tu primer título para disfrutar de carátulas dinámicas multitienda (Steam, Epic, Nintendo, Riot, Xbox, etc.) y seguimiento de progreso.'}
       </Typography>
 
       {searchTerm ? (
