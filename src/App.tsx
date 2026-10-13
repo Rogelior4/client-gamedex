@@ -26,6 +26,7 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import SyncRoundedIcon from "@mui/icons-material/SyncRounded";
 
 import GameCard from "./components/GameCard";
 import AddGameDialog from "./components/AddGameDialog";
@@ -38,6 +39,7 @@ import {
   createGame,
   updateGame,
   deleteGame,
+  syncMissingCovers,
   Game,
 } from "./services/game.service";
 
@@ -162,9 +164,15 @@ function App() {
     loadGames();
   }, [loadGames]);
 
-  const handleAddGame = async (title: string, platform: string) => {
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleAddGame = async (
+    title: string,
+    platform: string,
+    coverUrl?: string,
+  ) => {
     try {
-      await createGame(title, platform);
+      await createGame(title, platform, coverUrl);
       showSnackbar(`"${title}" añadido a tu colección`, "success");
       loadGames();
     } catch (error) {
@@ -176,13 +184,33 @@ function App() {
     id: number,
     title: string,
     platform: string,
+    coverUrl?: string | null,
   ) => {
     try {
-      await updateGame(id, { title, platform });
+      await updateGame(id, { title, platform, coverUrl });
       showSnackbar(`"${title}" actualizado correctamente`, "success");
       loadGames();
     } catch (error) {
       showSnackbar("Error al actualizar el juego", "error");
+    }
+  };
+
+  const handleSyncCovers = async () => {
+    try {
+      setIsSyncing(true);
+      showSnackbar("Sincronizando carátulas desde Steam...", "success");
+      const res = await syncMissingCovers();
+      showSnackbar(
+        res.updated > 0
+          ? `${res.updated} carátulas sincronizadas y guardadas con éxito`
+          : "Todas las carátulas ya están sincronizadas",
+        "success",
+      );
+      loadGames();
+    } catch (error) {
+      showSnackbar("Error al sincronizar carátulas con el servidor", "error");
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -356,13 +384,43 @@ function App() {
                         </IconButton>
                       </InputAdornment>
                     ) : null,
-                    style: { fontSize: "0.95rem" },
-                  }}
+                    }}
                 />
               </Box>
 
               {/* Header Actions */}
               <Box display="flex" alignItems="center" gap={1.5} ml={2}>
+                <Tooltip title="Sincronizar carátulas faltantes desde Steam" arrow>
+                  <span>
+                    <IconButton
+                      onClick={handleSyncCovers}
+                      disabled={isSyncing}
+                      sx={{
+                        borderRadius: "12px",
+                        bgcolor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
+                        border: "1px solid",
+                        borderColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
+                        color: isDark ? "#38bdf8" : "#0284c7",
+                        transition: "all 0.25s ease",
+                        "&:hover": {
+                          bgcolor: isDark ? "rgba(56, 189, 248, 0.15)" : "rgba(2, 132, 199, 0.1)",
+                        },
+                      }}
+                    >
+                      <SyncRoundedIcon
+                        sx={{
+                          fontSize: 20,
+                          animation: isSyncing ? "spin 1s linear infinite" : "none",
+                          "@keyframes spin": {
+                            "0%": { transform: "rotate(0deg)" },
+                            "100%": { transform: "rotate(360deg)" },
+                          },
+                        }}
+                      />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+
                 <Button
                   variant="contained"
                   onClick={() => setOpenAddDialog(true)}
@@ -690,6 +748,7 @@ function App() {
                   <GameCard
                     title={game.title}
                     platform={game.platform}
+                    coverUrl={game.coverUrl}
                     onEdit={() => setEditingGame(game)}
                     onDelete={() => handleDeleteGame(game.id)}
                   />
