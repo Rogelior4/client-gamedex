@@ -4,9 +4,10 @@ import {
   GameStatus,
   CreateGameData,
   UpdateGameData,
+  SteamSuggestion,
 } from "../types/game.types";
 
-export type { Game, GameStatus, CreateGameData, UpdateGameData };
+export type { Game, GameStatus, CreateGameData, UpdateGameData, SteamSuggestion };
 
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
@@ -76,3 +77,16 @@ export const getGameCover = async (title: string): Promise<string | null> => {
     return null;
   }
 };
+
+export const searchSteamGames = async (term: string): Promise<SteamSuggestion[]> => {
+  if (!term || term.trim().length === 0) return [];
+  try {
+    const { data } = await api.get<SteamSuggestion[]>("/games/search-steam", {
+      params: { term: term.trim() },
+    });
+    return data;
+  } catch (error) {
+    return [];
+  }
+};
+

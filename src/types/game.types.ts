@@ -55,3 +55,16 @@ export interface FilterOption {
   label: string;
   color: string;
 }
+
+export interface SteamSuggestion {
+  id: number;
+  title: string;
+  coverUrl: string;
+  headerUrl: string;
+  tinyImage: string;
+  platforms?: {
+    windows?: boolean;
+    mac?: boolean;
+    linux?: boolean;
+  };
+}
