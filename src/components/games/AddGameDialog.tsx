@@ -113,18 +113,19 @@ export default function AddGameDialog({
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth="xs"
+      maxWidth="sm"
       TransitionComponent={Fade}
       transitionDuration={250}
       PaperProps={{
         sx: {
-          borderRadius: "24px",
-          bgcolor: isDark ? "rgba(15, 23, 42, 0.95)" : "rgba(255, 255, 255, 0.95)",
-          backdropFilter: "blur(20px)",
+          borderRadius: "26px",
+          bgcolor: isDark ? "rgba(11, 15, 25, 0.96)" : "rgba(255, 255, 255, 0.96)",
+          backdropFilter: "blur(32px)",
+          WebkitBackdropFilter: "blur(32px)",
           border: "1px solid",
-          borderColor: isDark ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)",
+          borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
           boxShadow: isDark
-            ? "0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.2)"
+            ? "0 30px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(99, 102, 241, 0.2)"
             : "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
           p: 1,
         },
