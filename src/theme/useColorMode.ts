@@ -1,25 +1,29 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { getAppTheme } from './theme';
 
 export const useColorMode = () => {
   const [mode, setMode] = useState<'light' | 'dark'>(() => {
-    const savedMode = localStorage.getItem('gamedex_theme_mode_v2');
-    if (savedMode === 'light' || savedMode === 'dark') {
-      return savedMode;
-    }
-    // Clean old light preference and default strictly to comfortable dark mode
+    // Clear all legacy keys that were inadvertently set to light
     try {
       localStorage.removeItem('gamedex_theme_mode');
+      localStorage.removeItem('gamedex_theme_mode_v2');
     } catch {}
+
+    const manualChoice = localStorage.getItem('gamedex_theme_manual');
+    if (manualChoice === 'light' || manualChoice === 'dark') {
+      return manualChoice;
+    }
     return 'dark';
   });
 
-  useEffect(() => {
-    localStorage.setItem('gamedex_theme_mode_v2', mode);
-  }, [mode]);
-
   const toggleColorMode = () => {
-    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+    setMode((prevMode) => {
+      const nextMode = prevMode === 'light' ? 'dark' : 'light';
+      try {
+        localStorage.setItem('gamedex_theme_manual', nextMode);
+      } catch {}
+      return nextMode;
+    });
   };
 
   const isDark = mode === 'dark';

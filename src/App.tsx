@@ -154,61 +154,67 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
 
-
-
-        {/* Floating Capsule Navigation Bar */}
-        <Navbar
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          onClearSearch={() => setSearchTerm('')}
-          isSyncing={isSyncing}
-          onSyncCovers={handleSyncCovers}
-          onOpenAddGame={() => setOpenAddDialog(true)}
-          onOpenBackup={() => setOpenBackupDialog(true)}
-          isDark={isDark}
-        />
-
-        {/* Main Content Container */}
-        <Container maxWidth="xl" sx={{ mt: 3, mb: 12, position: 'relative', zIndex: 1 }}>
-          {/* Gamer Control Deck / Hero */}
-          <HeroStats
-            stats={stats}
+        <Box
+          sx={{
+            minHeight: '100vh',
+            bgcolor: 'background.default',
+            color: 'text.primary',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {/* Floating Capsule Navigation Bar */}
+          <Navbar
             searchTerm={searchTerm}
-            activeStatusFilter={activeStatusFilter}
-            activePlatformFilter={activePlatformFilter}
-            onSelectStatusFilter={setActiveStatusFilter}
-            onSelectPlatformFilter={setActivePlatformFilter}
+            onSearchChange={setSearchTerm}
+            onClearSearch={() => setSearchTerm('')}
+            isSyncing={isSyncing}
+            onSyncCovers={handleSyncCovers}
+            onOpenAddGame={() => setOpenAddDialog(true)}
+            onOpenBackup={() => setOpenBackupDialog(true)}
             isDark={isDark}
           />
 
-          {/* Games Grid or Empty States */}
-          {loading ? (
-            <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" py={14}>
-              <CircularProgress size={52} thickness={4} sx={{ color: 'primary.main', mb: 2 }} />
-              <Typography variant="body2" color="text.secondary" fontWeight="700">
-                Sincronizando biblioteca de videojuegos...
-              </Typography>
-            </Box>
-          ) : filteredGames.length === 0 ? (
-            <EmptyState
+          {/* Main Content Container */}
+          <Container maxWidth="xl" sx={{ mt: 3, mb: 8, flexGrow: 1, position: 'relative', zIndex: 1 }}>
+            {/* Gamer Control Deck / Hero */}
+            <HeroStats
+              stats={stats}
               searchTerm={searchTerm}
               activeStatusFilter={activeStatusFilter}
               activePlatformFilter={activePlatformFilter}
-              onClearSearch={() => setSearchTerm('')}
-              onOpenAddGame={() => setOpenAddDialog(true)}
+              onSelectStatusFilter={setActiveStatusFilter}
+              onSelectPlatformFilter={setActivePlatformFilter}
               isDark={isDark}
             />
-          ) : (
-            <GameGrid
-              games={filteredGames}
-              onEdit={setEditingGame}
-              onDelete={setDeletingGame}
-              onToggleFavorite={handleToggleFavorite}
-              onViewGame={setViewingGame}
-            />
-          )}
 
-
+            {/* Games Grid or Empty States */}
+            {loading ? (
+              <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" py={14}>
+                <CircularProgress size={52} thickness={4} sx={{ color: 'primary.main', mb: 2 }} />
+                <Typography variant="body2" color="text.secondary" fontWeight="700">
+                  Sincronizando biblioteca de videojuegos...
+                </Typography>
+              </Box>
+            ) : filteredGames.length === 0 ? (
+              <EmptyState
+                searchTerm={searchTerm}
+                activeStatusFilter={activeStatusFilter}
+                activePlatformFilter={activePlatformFilter}
+                onClearSearch={() => setSearchTerm('')}
+                onOpenAddGame={() => setOpenAddDialog(true)}
+                isDark={isDark}
+              />
+            ) : (
+              <GameGrid
+                games={filteredGames}
+                onEdit={setEditingGame}
+                onDelete={setDeletingGame}
+                onToggleFavorite={handleToggleFavorite}
+                onViewGame={setViewingGame}
+              />
+            )}
+          </Container>
 
           {/* Dialogs & Modals */}
           <AddGameDialog
@@ -275,7 +281,7 @@ function App() {
               {snackbar.message}
             </Alert>
           </Snackbar>
-        </Container>
+        </Box>
       </ThemeProvider>
     </ThemeContext.Provider>
   );

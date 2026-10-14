@@ -157,7 +157,7 @@ export default function GameCard({
               display: 'block',
               transition: `transform 0.4s ${springEasing}, filter 0.3s ease`,
               transform: isHovered ? 'scale(1.04)' : 'scale(1.0)',
-              filter: isHovered ? 'brightness(1)' : 'brightness(0.93)',
+              filter: isHovered ? 'brightness(1.04)' : 'none',
             }}
           />
         ) : (
