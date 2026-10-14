@@ -256,9 +256,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 startIcon={<AddRoundedIcon sx={{ fontSize: 19 }} />}
                 sx={{
                   display: { xs: 'none', sm: 'inline-flex' },
-                  bgcolor: isDark ? '#ffffff' : '#0f172a',
-                  color: isDark ? '#090a0f' : '#ffffff',
-                  boxShadow: isDark ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(15,23,42,0.15)',
+                  bgcolor: isDark ? '#232734' : '#0f172a',
+                  color: '#f8fafc',
+                  border: '1px solid',
+                  borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                  boxShadow: 'none',
                   borderRadius: '10px',
                   px: 2.2,
                   py: 0.85,
@@ -267,8 +269,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   letterSpacing: '-0.01em',
                   transition: 'all 0.18s ease',
                   '&:hover': {
-                    bgcolor: isDark ? '#e4e4e7' : '#1e293b',
-                    boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.4)' : '0 4px 12px rgba(15,23,42,0.25)',
+                    bgcolor: isDark ? '#2f3445' : '#1e293b',
+                    borderColor: isDark ? 'rgba(255, 255, 255, 0.25)' : 'transparent',
                     transform: 'translateY(-1px)',
                   },
                 }}

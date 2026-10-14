@@ -223,12 +223,14 @@ export const BackupDialog: React.FC<BackupDialogProps> = ({
                   py: 1.3,
                   borderRadius: '10px',
                   fontWeight: 700,
-                  bgcolor: isDark ? '#ffffff' : '#0f172a',
-                  color: isDark ? '#090a0f' : '#ffffff',
+                  bgcolor: isDark ? '#232734' : '#0f172a',
+                  color: '#f8fafc',
+                  border: '1px solid',
+                  borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
                   boxShadow: 'none',
                   textTransform: 'none',
                   '&:hover': {
-                    bgcolor: isDark ? '#e4e4e7' : '#1e293b',
+                    bgcolor: isDark ? '#2f3445' : '#1e293b',
                   },
                 }}
               >

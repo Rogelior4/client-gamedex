@@ -788,11 +788,13 @@ export default function AddGameDialog({
             py: 0.9,
             fontWeight: "700",
             textTransform: "none",
-            bgcolor: isDark ? "#ffffff" : "#0f172a",
-            color: isDark ? "#090a0f" : "#ffffff",
+            bgcolor: isDark ? "#232734" : "#0f172a",
+            color: "#f8fafc",
+            border: "1px solid",
+            borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "transparent",
             boxShadow: "none",
             "&:hover": {
-              bgcolor: isDark ? "#e4e4e7" : "#1e293b",
+              bgcolor: isDark ? "#2f3445" : "#1e293b",
             },
             "&:disabled": {
               bgcolor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",

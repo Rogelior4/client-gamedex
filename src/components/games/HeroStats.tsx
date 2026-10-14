@@ -168,19 +168,19 @@ export const HeroStats: React.FC<HeroStatsProps> = ({
                   borderRadius: '7px',
                   bgcolor: isActive
                     ? isDark
-                      ? '#f4f4f5'
-                      : '#0f172a'
+                      ? 'rgba(255, 255, 255, 0.12)'
+                      : 'rgba(15, 23, 42, 0.08)'
                     : 'transparent',
                   color: isActive
                     ? isDark
-                      ? '#090a0f'
-                      : '#ffffff'
+                      ? '#f1f5f9'
+                      : '#0f172a'
                     : 'text.secondary',
                   border: '1px solid',
                   borderColor: isActive
                     ? isDark
-                      ? '#f4f4f5'
-                      : '#0f172a'
+                      ? 'rgba(255, 255, 255, 0.22)'
+                      : 'rgba(15, 23, 42, 0.2)'
                     : isDark
                     ? 'rgba(255, 255, 255, 0.05)'
                     : 'rgba(0, 0, 0, 0.05)',
@@ -188,12 +188,12 @@ export const HeroStats: React.FC<HeroStatsProps> = ({
                   '&:hover': {
                     bgcolor: isActive
                       ? isDark
-                        ? '#ffffff'
-                        : '#1e293b'
+                        ? 'rgba(255, 255, 255, 0.16)'
+                        : 'rgba(15, 23, 42, 0.12)'
                       : isDark
                       ? 'rgba(255, 255, 255, 0.06)'
                       : 'rgba(0, 0, 0, 0.04)',
-                    color: isActive ? undefined : (isDark ? '#ffffff' : '#0f172a'),
+                    color: isDark ? '#ffffff' : '#0f172a',
                   },
                 }}
               />

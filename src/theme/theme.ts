@@ -17,14 +17,14 @@ export const getAppTheme = (mode: 'light' | 'dark'): Theme =>
         contrastText: '#ffffff',
       },
       background: {
-        default: mode === 'light' ? '#f8fafc' : '#0a0b0f',
-        paper: mode === 'light' ? '#ffffff' : '#13151c',
+        default: mode === 'light' ? '#f1f3f7' : '#0c0e14',
+        paper: mode === 'light' ? '#ffffff' : '#14161f',
       },
       text: {
-        primary: mode === 'light' ? '#0f172a' : '#f4f4f5',
-        secondary: mode === 'light' ? '#64748b' : '#8e8e93',
+        primary: mode === 'light' ? '#0f172a' : '#e2e8f0',
+        secondary: mode === 'light' ? '#64748b' : '#8b949e',
       },
-      divider: mode === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)',
+      divider: mode === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.07)',
     },
     typography: {
       fontFamily: '"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',

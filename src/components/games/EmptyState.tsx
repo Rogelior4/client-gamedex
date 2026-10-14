@@ -119,11 +119,13 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             py: 1.2,
             fontWeight: 700,
             fontSize: '0.9rem',
-            bgcolor: isDark ? '#ffffff' : '#0f172a',
-            color: isDark ? '#090a0f' : '#ffffff',
-            boxShadow: isDark ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(15,23,42,0.15)',
+            bgcolor: isDark ? '#232734' : '#0f172a',
+            color: '#f8fafc',
+            border: '1px solid',
+            borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+            boxShadow: 'none',
             '&:hover': {
-              bgcolor: isDark ? '#e4e4e7' : '#1e293b',
+              bgcolor: isDark ? '#2f3445' : '#1e293b',
               transform: 'translateY(-1px)',
             },
           }}
