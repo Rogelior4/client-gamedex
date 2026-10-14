@@ -99,17 +99,17 @@ export default function GameCard({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        bgcolor: isDark ? '#13151c' : '#ffffff',
+        bgcolor: isDark ? '#1b202c' : '#ffffff',
         borderRadius: '14px',
         p: 1,
         border: '1px solid',
         borderColor: isHovered
-          ? (isDark ? 'rgba(255, 255, 255, 0.18)' : 'rgba(0, 0, 0, 0.15)')
-          : (isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)'),
+          ? (isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)')
+          : (isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'),
         boxShadow: isHovered
-          ? (isDark ? '0 12px 28px -5px rgba(0, 0, 0, 0.6)' : '0 10px 24px -5px rgba(0, 0, 0, 0.08)')
-          : (isDark ? '0 2px 8px rgba(0, 0, 0, 0.25)' : '0 2px 8px rgba(0, 0, 0, 0.03)'),
-        transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
+          ? (isDark ? '0 10px 24px -5px rgba(0, 0, 0, 0.45)' : '0 8px 20px -5px rgba(0, 0, 0, 0.07)')
+          : (isDark ? '0 2px 8px rgba(0, 0, 0, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.03)'),
+        transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
         transition: `all 0.2s ${springEasing}`,
         cursor: 'pointer',
         position: 'relative',
@@ -122,8 +122,10 @@ export default function GameCard({
         sx={{
           width: '100%',
           aspectRatio: '2/3',
-          borderRadius: '16px',
-          bgcolor: isDark ? '#05070c' : '#f1f5f9',
+          borderRadius: '12px',
+          bgcolor: isDark ? '#12151e' : '#e2e8f0',
+          border: '1px solid',
+          borderColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'transparent',
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -153,9 +155,9 @@ export default function GameCard({
               height: '100%',
               objectFit: 'cover',
               display: 'block',
-              transition: `transform 0.5s ${springEasing}, filter 0.35s ease`,
-              transform: isHovered ? 'scale(1.08)' : 'scale(1.0)',
-              filter: isHovered ? 'contrast(1.05) brightness(1.05)' : 'none',
+              transition: `transform 0.4s ${springEasing}, filter 0.3s ease`,
+              transform: isHovered ? 'scale(1.04)' : 'scale(1.0)',
+              filter: isHovered ? 'brightness(1)' : 'brightness(0.93)',
             }}
           />
         ) : (
@@ -429,13 +431,13 @@ export default function GameCard({
         <Tooltip title={title} placement="top" arrow enterDelay={400}>
           <Typography
             variant="subtitle2"
-            fontWeight="700"
+            fontWeight="600"
             noWrap
             sx={{
-              color: isDark ? '#f8fafc' : '#0f172a',
+              color: isDark ? '#c8d3df' : '#0f172a',
               fontFamily: '"Outfit", sans-serif',
-              fontSize: '0.94rem',
-              letterSpacing: '-0.015em',
+              fontSize: '0.92rem',
+              letterSpacing: '-0.01em',
               lineHeight: 1.3,
               mb: 0.8,
               transition: 'color 0.18s ease',

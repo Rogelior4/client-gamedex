@@ -38,13 +38,13 @@ export const HeroStats: React.FC<HeroStatsProps> = ({
         <Box>
           <Typography
             variant="h4"
-            fontWeight="900"
+            fontWeight="700"
             sx={{
-              fontSize: { xs: '1.65rem', sm: '1.9rem', md: '2.2rem' },
+              fontSize: { xs: '1.6rem', sm: '1.85rem', md: '2.1rem' },
               fontFamily: '"Outfit", sans-serif',
-              letterSpacing: '-0.03em',
+              letterSpacing: '-0.025em',
               lineHeight: 1.15,
-              color: isDark ? '#f8fafc' : '#0f172a',
+              color: isDark ? '#c8d3df' : '#0f172a',
             }}
           >
             {searchTerm ? `Resultados: "${searchTerm}"` : 'Biblioteca'}
@@ -130,13 +130,13 @@ export const HeroStats: React.FC<HeroStatsProps> = ({
           gap: 1.2,
           p: { xs: 1.2, sm: 1.4 },
           borderRadius: '14px',
-          bgcolor: isDark ? 'rgba(16, 18, 24, 0.65)' : 'rgba(255, 255, 255, 0.8)',
+          bgcolor: isDark ? 'rgba(24, 29, 40, 0.75)' : 'rgba(255, 255, 255, 0.8)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           border: '1px solid',
-          borderColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)',
+          borderColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.06)',
           boxShadow: isDark
-            ? '0 4px 20px -5px rgba(0, 0, 0, 0.4)'
+            ? '0 4px 16px -5px rgba(0, 0, 0, 0.3)'
             : '0 4px 16px -5px rgba(0, 0, 0, 0.04)',
         }}
       >

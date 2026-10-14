@@ -62,25 +62,25 @@ export const Navbar: React.FC<NavbarProps> = ({
         sx={{
           maxWidth: '1440px',
           mx: 'auto',
-          borderRadius: { xs: '18px', md: '24px' },
-          bgcolor: isDark ? 'rgba(11, 15, 25, 0.75)' : 'rgba(255, 255, 255, 0.85)',
-          backdropFilter: 'blur(28px)',
-          WebkitBackdropFilter: 'blur(28px)',
+          borderRadius: { xs: '14px', md: '18px' },
+          bgcolor: isDark ? 'rgba(23, 27, 37, 0.85)' : 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
           border: '1px solid',
-          borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
+          borderColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)',
           boxShadow: isDark
-            ? '0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08)'
-            : '0 20px 40px -15px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+            ? '0 8px 24px -10px rgba(0, 0, 0, 0.35)'
+            : '0 8px 24px -10px rgba(0, 0, 0, 0.05)',
           color: 'text.primary',
         }}
       >
         <Container maxWidth="xl" disableGutters sx={{ px: { xs: 2, sm: 3 } }}>
-          <Toolbar sx={{ height: { xs: 70, md: 76 }, px: '0 !important', gap: 2 }}>
+          <Toolbar sx={{ height: { xs: 68, md: 72 }, px: '0 !important', gap: 2 }}>
             {/* Logo & Brand */}
             <Box
               display="flex"
               alignItems="center"
-              gap={1.5}
+              gap={1.4}
               sx={{
                 cursor: 'pointer',
                 userSelect: 'none',
@@ -90,28 +90,29 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Box
                 sx={{
-                  width: 38,
-                  height: 38,
+                  width: 36,
+                  height: 36,
                   borderRadius: '10px',
-                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : '#0f172a',
+                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.06)' : '#0f172a',
                   border: '1px solid',
-                  borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+                  borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: isDark ? '#f4f4f5' : '#ffffff',
+                  color: isDark ? '#c8d3df' : '#ffffff',
                 }}
               >
-                <SportsEsportsRoundedIcon sx={{ fontSize: 22 }} />
+                <SportsEsportsRoundedIcon sx={{ fontSize: 20 }} />
               </Box>
 
               <Typography
                 variant="h6"
                 sx={{
-                  fontWeight: 800,
+                  fontWeight: 700,
                   letterSpacing: '-0.02em',
                   fontFamily: '"Outfit", sans-serif',
-                  color: isDark ? '#f4f4f5' : '#0f172a',
+                  color: isDark ? '#c8d3df' : '#0f172a',
+                  fontSize: '1.18rem',
                 }}
               >
                 GameDex
