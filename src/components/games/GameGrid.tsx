@@ -8,6 +8,7 @@ interface GameGridProps {
   onEdit: (game: Game) => void;
   onDelete: (game: Game) => void;
   onToggleFavorite: (id: number, current: boolean) => void;
+  onViewGame: (game: Game) => void;
 }
 
 export const GameGrid: React.FC<GameGridProps> = ({
@@ -15,9 +16,10 @@ export const GameGrid: React.FC<GameGridProps> = ({
   onEdit,
   onDelete,
   onToggleFavorite,
+  onViewGame,
 }) => {
   return (
-    <Grid container spacing={{ xs: 2.5, sm: 3, md: 3.5 }}>
+    <Grid container spacing={{ xs: 2, sm: 2.5, md: 3, lg: 3.5 }}>
       {games.map((game) => (
         <Grid
           size={{ xs: 6, sm: 4, md: 3, lg: 2.4, xl: 2 }}
@@ -35,6 +37,7 @@ export const GameGrid: React.FC<GameGridProps> = ({
             onEdit={() => onEdit(game)}
             onDelete={() => onDelete(game)}
             onToggleFavorite={() => onToggleFavorite(game.id, game.isFavorite)}
+            onClick={() => onViewGame(game)}
           />
         </Grid>
       ))}

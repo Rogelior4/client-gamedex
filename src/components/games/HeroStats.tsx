@@ -27,189 +27,215 @@ export const HeroStats: React.FC<HeroStatsProps> = ({
     <Paper
       elevation={0}
       sx={{
-        p: { xs: 3, md: 5 },
+        p: { xs: 2.5, sm: 3.5, md: 4 },
         mb: 4,
-        borderRadius: '28px',
-        bgcolor: isDark ? 'rgba(17, 24, 39, 0.7)' : 'rgba(255, 255, 255, 0.8)',
-        backdropFilter: 'blur(20px)',
+        borderRadius: { xs: '22px', md: '28px' },
+        bgcolor: isDark ? 'rgba(14, 18, 29, 0.7)' : 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
         border: '1px solid',
         borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
         boxShadow: isDark
-          ? '0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08)'
-          : '0 20px 40px -15px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1)',
+          ? '0 25px 50px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.07)'
+          : '0 20px 40px -15px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Decorative radial glow */}
+      {/* Ambient Radial Lights */}
       <Box
         sx={{
           position: 'absolute',
-          top: -50,
-          right: -50,
-          width: 250,
-          height: 250,
+          top: -80,
+          right: -80,
+          width: 320,
+          height: 320,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)',
+          background: isDark
+            ? 'radial-gradient(circle, rgba(99, 102, 241, 0.16) 0%, rgba(6, 182, 212, 0.08) 50%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)',
           pointerEvents: 'none',
         }}
       />
 
+      {/* Main Header & Real-time Live Counters */}
       <Box
         display="flex"
-        flexDirection={{ xs: 'column', md: 'row' }}
+        flexDirection={{ xs: 'column', lg: 'row' }}
         justifyContent="space-between"
-        alignItems={{ xs: 'flex-start', md: 'center' }}
+        alignItems={{ xs: 'flex-start', lg: 'center' }}
         gap={3}
       >
         <Box>
           <Box display="flex" alignItems="center" gap={1.2} mb={1}>
-            <Chip
-              icon={<AutoAwesomeRoundedIcon sx={{ fontSize: 16 }} />}
-              label="LIBRERÍA PERSONAL"
-              size="small"
+            <Box
               sx={{
-                height: 26,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.8,
+                px: 1.2,
+                py: 0.4,
+                borderRadius: '8px',
+                bgcolor: isDark ? 'rgba(99, 102, 241, 0.12)' : 'rgba(99, 102, 241, 0.08)',
+                border: '1px solid',
+                borderColor: isDark ? 'rgba(99, 102, 241, 0.25)' : 'rgba(99, 102, 241, 0.2)',
+                color: isDark ? '#818cf8' : '#4f46e5',
                 fontSize: '0.72rem',
                 fontWeight: 800,
-                letterSpacing: 1,
-                bgcolor: isDark ? 'rgba(56, 189, 248, 0.12)' : 'rgba(2, 132, 199, 0.08)',
-                color: isDark ? '#38bdf8' : '#0284c7',
-                border: '1px solid',
-                borderColor: isDark ? 'rgba(56, 189, 248, 0.25)' : 'rgba(2, 132, 199, 0.2)',
-                borderRadius: '8px',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
               }}
-            />
+            >
+              <AutoAwesomeRoundedIcon sx={{ fontSize: 14 }} />
+              <span>Bóveda Personal Gamer</span>
+            </Box>
           </Box>
+
           <Typography
             variant="h3"
             sx={{
-              fontSize: { xs: '1.8rem', sm: '2.4rem', md: '2.8rem' },
+              fontSize: { xs: '1.9rem', sm: '2.5rem', md: '2.9rem' },
               fontWeight: 900,
-              letterSpacing: '-0.5px',
-              lineHeight: 1.15,
+              fontFamily: '"Outfit", sans-serif',
+              letterSpacing: '-0.03em',
+              lineHeight: 1.1,
               mb: 1,
               background: isDark
-                ? 'linear-gradient(135deg, #ffffff 20%, #94a3b8 100%)'
-                : 'linear-gradient(135deg, #0f172a 20%, #475569 100%)',
+                ? 'linear-gradient(135deg, #ffffff 15%, #94a3b8 100%)'
+                : 'linear-gradient(135deg, #0f172a 15%, #334155 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}
           >
-            {searchTerm ? 'Resultados de Búsqueda' : 'Tu Colección Gamer'}
+            {searchTerm ? `Resultados: "${searchTerm}"` : 'Biblioteca de Videojuegos'}
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 650, fontSize: '1.05rem' }}>
-            Catálogo centralizado de tus videojuegos con carátulas dinámicas sincronizadas en tiempo real desde Steam.
+
+          <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 600, fontSize: '0.98rem', fontWeight: 500 }}>
+            {searchTerm
+              ? 'Filtrando títulos coincidentes en tu catálogo'
+              : 'Controla tu progreso, horas dedicadas, calificaciones y carátulas sincronizadas.'}
           </Typography>
         </Box>
 
-        {/* Gamer stats badges */}
-        <Box display="flex" alignItems="center" gap={1.2} flexWrap="wrap">
-          <Paper
-            elevation={0}
+        {/* Minimalist Live Stat Counters */}
+        <Box display="flex" alignItems="center" gap={1.5} flexWrap="wrap">
+          {/* Total */}
+          <Box
             sx={{
-              px: 2,
+              px: 2.2,
               py: 1.2,
-              borderRadius: '14px',
-              bgcolor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)',
+              borderRadius: '16px',
+              bgcolor: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)',
               border: '1px solid',
               borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
+              minWidth: 80,
               textAlign: 'center',
-              minWidth: 65,
             }}
           >
-            <Typography variant="h5" fontWeight="900" color="primary.main" sx={{ lineHeight: 1 }}>
+            <Typography variant="h5" fontWeight="900" sx={{ color: isDark ? '#f8fafc' : '#0f172a', lineHeight: 1 }}>
               {stats.total}
             </Typography>
-            <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
-              Total
+            <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: '0.68rem' }}>
+              Juegos
             </Typography>
-          </Paper>
+          </Box>
 
-          <Paper
-            elevation={0}
+          {/* Playing (with pulse dot) */}
+          <Box
             sx={{
-              px: 2,
+              px: 2.2,
               py: 1.2,
-              borderRadius: '14px',
-              bgcolor: isDark ? 'rgba(34, 197, 94, 0.08)' : 'rgba(34, 197, 94, 0.06)',
+              borderRadius: '16px',
+              bgcolor: isDark ? 'rgba(16, 185, 129, 0.08)' : 'rgba(16, 185, 129, 0.06)',
               border: '1px solid',
-              borderColor: isDark ? 'rgba(34, 197, 94, 0.2)' : 'rgba(34, 197, 94, 0.15)',
+              borderColor: isDark ? 'rgba(16, 185, 129, 0.25)' : 'rgba(16, 185, 129, 0.2)',
+              minWidth: 80,
               textAlign: 'center',
-              minWidth: 65,
             }}
           >
-            <Typography variant="h5" fontWeight="900" sx={{ color: '#22c55e', lineHeight: 1 }}>
-              {stats.playing}
-            </Typography>
-            <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
+            <Box display="flex" alignItems="center" justifyContent="center" gap={0.8}>
+              <Box
+                sx={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: '50%',
+                  bgcolor: '#10b981',
+                  boxShadow: '0 0 10px #10b981',
+                }}
+              />
+              <Typography variant="h5" fontWeight="900" sx={{ color: '#10b981', lineHeight: 1 }}>
+                {stats.playing}
+              </Typography>
+            </Box>
+            <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: '0.68rem' }}>
               Jugando
             </Typography>
-          </Paper>
+          </Box>
 
-          <Paper
-            elevation={0}
+          {/* Completed */}
+          <Box
             sx={{
-              px: 2,
+              px: 2.2,
               py: 1.2,
-              borderRadius: '14px',
+              borderRadius: '16px',
               bgcolor: isDark ? 'rgba(245, 158, 11, 0.08)' : 'rgba(245, 158, 11, 0.06)',
               border: '1px solid',
-              borderColor: isDark ? 'rgba(245, 158, 11, 0.2)' : 'rgba(245, 158, 11, 0.15)',
+              borderColor: isDark ? 'rgba(245, 158, 11, 0.25)' : 'rgba(245, 158, 11, 0.2)',
+              minWidth: 80,
               textAlign: 'center',
-              minWidth: 65,
             }}
           >
             <Typography variant="h5" fontWeight="900" sx={{ color: '#f59e0b', lineHeight: 1 }}>
               {stats.completed}
             </Typography>
-            <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
-              Completados
+            <Typography variant="caption" sx={{ color: '#f59e0b', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: '0.68rem' }}>
+              Completos
             </Typography>
-          </Paper>
+          </Box>
 
-          <Paper
-            elevation={0}
+          {/* Favorites */}
+          <Box
             sx={{
-              px: 2,
+              px: 2.2,
               py: 1.2,
-              borderRadius: '14px',
+              borderRadius: '16px',
               bgcolor: isDark ? 'rgba(234, 179, 8, 0.08)' : 'rgba(234, 179, 8, 0.06)',
               border: '1px solid',
-              borderColor: isDark ? 'rgba(234, 179, 8, 0.2)' : 'rgba(234, 179, 8, 0.15)',
+              borderColor: isDark ? 'rgba(234, 179, 8, 0.25)' : 'rgba(234, 179, 8, 0.2)',
+              minWidth: 80,
               textAlign: 'center',
-              minWidth: 65,
             }}
           >
             <Typography variant="h5" fontWeight="900" sx={{ color: '#eab308', lineHeight: 1 }}>
               {stats.favorites}
             </Typography>
-            <Typography variant="caption" color="text.secondary" fontWeight="700" sx={{ letterSpacing: 0.5 }}>
+            <Typography variant="caption" sx={{ color: '#eab308', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: '0.68rem' }}>
               Favoritos
             </Typography>
-          </Paper>
+          </Box>
         </Box>
       </Box>
 
-      {/* Quick Interactive Status Filters */}
+      {/* Segmented Filter Control Bar (Status Tabs) */}
       <Box
         display="flex"
         alignItems="center"
         gap={1}
-        mt={3}
+        mt={3.5}
         pt={2.5}
         borderTop="1px solid"
-        borderColor={isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)'}
+        borderColor={isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(0, 0, 0, 0.06)'}
         flexWrap="wrap"
       >
         <Typography
           variant="caption"
           color="text.secondary"
-          fontWeight="700"
-          sx={{ mr: 1, textTransform: 'uppercase', letterSpacing: 1 }}
+          fontWeight="800"
+          sx={{ mr: 1, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.7rem' }}
         >
           Estado:
         </Typography>
+
         {STATUS_FILTERS.map((f) => {
           const isActive = activeStatusFilter === f.id;
           return (
@@ -219,24 +245,26 @@ export const HeroStats: React.FC<HeroStatsProps> = ({
               onClick={() => onSelectStatusFilter(f.id)}
               clickable
               sx={{
-                height: 32,
-                px: 0.8,
-                borderRadius: '10px',
-                fontWeight: isActive ? 800 : 500,
-                fontSize: '0.85rem',
+                height: 34,
+                px: 1,
+                borderRadius: '12px',
+                fontWeight: isActive ? 800 : 600,
+                fontSize: '0.82rem',
                 bgcolor: isActive
-                  ? `${f.color}25`
+                  ? isDark
+                    ? 'rgba(99, 102, 241, 0.25)'
+                    : 'rgba(99, 102, 241, 0.15)'
                   : isDark
                   ? 'rgba(255, 255, 255, 0.04)'
-                  : 'rgba(0, 0, 0, 0.04)',
-                color: isActive ? f.color : 'text.secondary',
+                  : 'rgba(0, 0, 0, 0.03)',
+                color: isActive ? (isDark ? '#a5b4fc' : '#4f46e5') : 'text.secondary',
                 border: '1px solid',
-                borderColor: isActive ? f.color : 'transparent',
-                boxShadow: isActive ? `0 0 12px ${f.color}30` : 'none',
-                transition: 'all 0.2s ease',
+                borderColor: isActive ? (isDark ? '#6366f1' : '#4f46e5') : 'transparent',
+                boxShadow: isActive ? '0 0 15px rgba(99, 102, 241, 0.35)' : 'none',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
                 '&:hover': {
-                  bgcolor: `${f.color}20`,
-                  color: f.color,
+                  bgcolor: isDark ? 'rgba(99, 102, 241, 0.18)' : 'rgba(99, 102, 241, 0.1)',
+                  color: isDark ? '#ffffff' : '#4f46e5',
                 },
               }}
             />
@@ -247,23 +275,32 @@ export const HeroStats: React.FC<HeroStatsProps> = ({
           <Button
             size="small"
             onClick={() => onSelectStatusFilter('ALL')}
-            sx={{ color: 'text.secondary', fontSize: '0.75rem', minWidth: 'auto', px: 1 }}
+            sx={{
+              color: 'text.secondary',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              minWidth: 'auto',
+              px: 1.2,
+              borderRadius: '8px',
+              '&:hover': { color: 'primary.main' },
+            }}
           >
-            Limpiar estado
+            Limpiar filtro
           </Button>
         )}
       </Box>
 
-      {/* Quick Interactive Platform Filters */}
-      <Box display="flex" alignItems="center" gap={1} mt={1.5} flexWrap="wrap">
+      {/* Platform Filter Capsules */}
+      <Box display="flex" alignItems="center" gap={1} mt={1.8} flexWrap="wrap">
         <Typography
           variant="caption"
           color="text.secondary"
-          fontWeight="700"
-          sx={{ mr: 1, textTransform: 'uppercase', letterSpacing: 1 }}
+          fontWeight="800"
+          sx={{ mr: 1, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.7rem' }}
         >
           Plataforma:
         </Typography>
+
         {PLATFORM_FILTERS.map((f) => {
           const isActive = activePlatformFilter === f.id;
           return (
@@ -275,21 +312,21 @@ export const HeroStats: React.FC<HeroStatsProps> = ({
               sx={{
                 height: 32,
                 px: 0.8,
-                borderRadius: '10px',
-                fontWeight: isActive ? 800 : 500,
-                fontSize: '0.85rem',
+                borderRadius: '11px',
+                fontWeight: isActive ? 800 : 600,
+                fontSize: '0.8rem',
                 bgcolor: isActive
                   ? `${f.color}25`
                   : isDark
-                  ? 'rgba(255, 255, 255, 0.04)'
-                  : 'rgba(0, 0, 0, 0.04)',
+                  ? 'rgba(255, 255, 255, 0.03)'
+                  : 'rgba(0, 0, 0, 0.03)',
                 color: isActive ? f.color : 'text.secondary',
                 border: '1px solid',
                 borderColor: isActive ? f.color : 'transparent',
-                boxShadow: isActive ? `0 0 12px ${f.color}30` : 'none',
-                transition: 'all 0.2s ease',
+                boxShadow: isActive ? `0 0 14px ${f.color}40` : 'none',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
                 '&:hover': {
-                  bgcolor: `${f.color}20`,
+                  bgcolor: `${f.color}18`,
                   color: f.color,
                 },
               }}
@@ -301,7 +338,15 @@ export const HeroStats: React.FC<HeroStatsProps> = ({
           <Button
             size="small"
             onClick={() => onSelectPlatformFilter('ALL')}
-            sx={{ color: 'text.secondary', fontSize: '0.75rem', minWidth: 'auto', px: 1 }}
+            sx={{
+              color: 'text.secondary',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              minWidth: 'auto',
+              px: 1.2,
+              borderRadius: '8px',
+              '&:hover': { color: 'primary.main' },
+            }}
           >
             Limpiar plataforma
           </Button>
