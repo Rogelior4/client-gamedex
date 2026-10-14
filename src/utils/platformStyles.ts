@@ -13,10 +13,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("steam") && !normalized.includes("deck")) {
     return {
       label: "Steam",
-      color: isDark ? "#38bdf8" : "#0284c7",
-      bgColor: isDark ? "rgba(56, 189, 248, 0.15)" : "rgba(2, 132, 199, 0.1)",
-      borderColor: isDark ? "rgba(56, 189, 248, 0.35)" : "rgba(2, 132, 199, 0.25)",
-      gradient: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+      color: isDark ? "#93c5fd" : "#2563eb",
+      bgColor: isDark ? "rgba(147, 197, 253, 0.08)" : "rgba(37, 99, 235, 0.06)",
+      borderColor: isDark ? "rgba(147, 197, 253, 0.18)" : "rgba(37, 99, 235, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -24,10 +24,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("steam deck")) {
     return {
       label: "Steam Deck",
-      color: isDark ? "#818cf8" : "#4f46e5",
-      bgColor: isDark ? "rgba(129, 140, 248, 0.15)" : "rgba(79, 70, 229, 0.1)",
-      borderColor: isDark ? "rgba(129, 140, 248, 0.35)" : "rgba(79, 70, 229, 0.25)",
-      gradient: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
+      color: isDark ? "#a5b4fc" : "#4f46e5",
+      bgColor: isDark ? "rgba(165, 180, 252, 0.08)" : "rgba(79, 70, 229, 0.06)",
+      borderColor: isDark ? "rgba(165, 180, 252, 0.18)" : "rgba(79, 70, 229, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -35,10 +35,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("epic")) {
     return {
       label: "Epic Games",
-      color: isDark ? "#c084fc" : "#7c3aed",
-      bgColor: isDark ? "rgba(192, 132, 252, 0.15)" : "rgba(124, 58, 237, 0.1)",
-      borderColor: isDark ? "rgba(192, 132, 252, 0.35)" : "rgba(124, 58, 237, 0.25)",
-      gradient: "linear-gradient(135deg, #2b2b2b 0%, #0074e4 100%)",
+      color: isDark ? "#d8b4fe" : "#7c3aed",
+      bgColor: isDark ? "rgba(216, 180, 254, 0.08)" : "rgba(124, 58, 237, 0.06)",
+      borderColor: isDark ? "rgba(216, 180, 254, 0.18)" : "rgba(124, 58, 237, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -46,10 +46,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("riot")) {
     return {
       label: "Riot Games",
-      color: isDark ? "#f43f5e" : "#e11d48",
-      bgColor: isDark ? "rgba(244, 63, 94, 0.15)" : "rgba(225, 29, 72, 0.1)",
-      borderColor: isDark ? "rgba(244, 63, 94, 0.35)" : "rgba(225, 29, 72, 0.25)",
-      gradient: "linear-gradient(135deg, #d90429 0%, #ef233c 100%)",
+      color: isDark ? "#fda4af" : "#e11d48",
+      bgColor: isDark ? "rgba(253, 164, 175, 0.08)" : "rgba(225, 29, 72, 0.06)",
+      borderColor: isDark ? "rgba(253, 164, 175, 0.18)" : "rgba(225, 29, 72, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -57,10 +57,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("battle") || normalized.includes("blizzard")) {
     return {
       label: "Battle.net",
-      color: isDark ? "#38bdf8" : "#0284c7",
-      bgColor: isDark ? "rgba(14, 165, 233, 0.15)" : "rgba(2, 132, 199, 0.1)",
-      borderColor: isDark ? "rgba(14, 165, 233, 0.35)" : "rgba(2, 132, 199, 0.25)",
-      gradient: "linear-gradient(135deg, #002244 0%, #00a4e4 100%)",
+      color: isDark ? "#93c5fd" : "#0284c7",
+      bgColor: isDark ? "rgba(147, 197, 253, 0.08)" : "rgba(2, 132, 199, 0.06)",
+      borderColor: isDark ? "rgba(147, 197, 253, 0.18)" : "rgba(2, 132, 199, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -68,10 +68,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("ea") || normalized.includes("origin")) {
     return {
       label: "EA App",
-      color: isDark ? "#fb923c" : "#ea580c",
-      bgColor: isDark ? "rgba(251, 146, 60, 0.15)" : "rgba(234, 88, 12, 0.1)",
-      borderColor: isDark ? "rgba(251, 146, 60, 0.35)" : "rgba(234, 88, 12, 0.25)",
-      gradient: "linear-gradient(135deg, #ff4747 0%, #ff8008 100%)",
+      color: isDark ? "#fed7aa" : "#ea580c",
+      bgColor: isDark ? "rgba(254, 215, 170, 0.08)" : "rgba(234, 88, 12, 0.06)",
+      borderColor: isDark ? "rgba(254, 215, 170, 0.18)" : "rgba(234, 88, 12, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -79,10 +79,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("ubisoft") || normalized.includes("uplay")) {
     return {
       label: "Ubisoft",
-      color: isDark ? "#a78bfa" : "#7c3aed",
-      bgColor: isDark ? "rgba(167, 139, 250, 0.15)" : "rgba(124, 58, 237, 0.1)",
-      borderColor: isDark ? "rgba(167, 139, 250, 0.35)" : "rgba(124, 58, 237, 0.25)",
-      gradient: "linear-gradient(135deg, #001244 0%, #0050ef 100%)",
+      color: isDark ? "#c4b5fd" : "#7c3aed",
+      bgColor: isDark ? "rgba(196, 181, 253, 0.08)" : "rgba(124, 58, 237, 0.06)",
+      borderColor: isDark ? "rgba(196, 181, 253, 0.18)" : "rgba(124, 58, 237, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -95,10 +95,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   ) {
     return {
       label: platform.toUpperCase().includes("PS") ? platform.toUpperCase() : "PlayStation",
-      color: isDark ? "#818cf8" : "#4f46e5",
-      bgColor: isDark ? "rgba(129, 140, 248, 0.15)" : "rgba(79, 70, 229, 0.1)",
-      borderColor: isDark ? "rgba(129, 140, 248, 0.35)" : "rgba(79, 70, 229, 0.25)",
-      gradient: "linear-gradient(135deg, #003791 0%, #0070d1 100%)",
+      color: isDark ? "#93c5fd" : "#1d4ed8",
+      bgColor: isDark ? "rgba(147, 197, 253, 0.08)" : "rgba(29, 78, 216, 0.06)",
+      borderColor: isDark ? "rgba(147, 197, 253, 0.18)" : "rgba(29, 78, 216, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -106,10 +106,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("xbox")) {
     return {
       label: normalized.includes("series") ? "Xbox Series" : "Xbox",
-      color: isDark ? "#4ade80" : "#16a34a",
-      bgColor: isDark ? "rgba(74, 222, 128, 0.15)" : "rgba(22, 163, 74, 0.1)",
-      borderColor: isDark ? "rgba(74, 222, 128, 0.35)" : "rgba(22, 163, 74, 0.25)",
-      gradient: "linear-gradient(135deg, #107c10 0%, #0e6210 100%)",
+      color: isDark ? "#86efac" : "#16a34a",
+      bgColor: isDark ? "rgba(134, 239, 172, 0.08)" : "rgba(22, 163, 74, 0.06)",
+      borderColor: isDark ? "rgba(134, 239, 172, 0.18)" : "rgba(22, 163, 74, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -117,10 +117,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("ds") && !normalized.includes("3ds") && !normalized.includes("deck")) {
     return {
       label: "Nintendo DS",
-      color: isDark ? "#fb7185" : "#e11d48",
-      bgColor: isDark ? "rgba(251, 113, 133, 0.15)" : "rgba(225, 29, 72, 0.1)",
-      borderColor: isDark ? "rgba(251, 113, 133, 0.35)" : "rgba(225, 29, 72, 0.25)",
-      gradient: "linear-gradient(135deg, #e60012 0%, #c1121f 100%)",
+      color: isDark ? "#fca5a5" : "#dc2626",
+      bgColor: isDark ? "rgba(252, 165, 165, 0.08)" : "rgba(220, 38, 38, 0.06)",
+      borderColor: isDark ? "rgba(252, 165, 165, 0.18)" : "rgba(220, 38, 38, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -128,10 +128,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("3ds")) {
     return {
       label: "Nintendo 3DS",
-      color: isDark ? "#fb7185" : "#e11d48",
-      bgColor: isDark ? "rgba(251, 113, 133, 0.15)" : "rgba(225, 29, 72, 0.1)",
-      borderColor: isDark ? "rgba(251, 113, 133, 0.35)" : "rgba(225, 29, 72, 0.25)",
-      gradient: "linear-gradient(135deg, #e60012 0%, #c1121f 100%)",
+      color: isDark ? "#fca5a5" : "#dc2626",
+      bgColor: isDark ? "rgba(252, 165, 165, 0.08)" : "rgba(220, 38, 38, 0.06)",
+      borderColor: isDark ? "rgba(252, 165, 165, 0.18)" : "rgba(220, 38, 38, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -150,10 +150,10 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
     else if (normalized.includes("64")) lbl = "Nintendo 64";
     return {
       label: lbl,
-      color: isDark ? "#fb7185" : "#e11d48",
-      bgColor: isDark ? "rgba(251, 113, 133, 0.15)" : "rgba(225, 29, 72, 0.1)",
-      borderColor: isDark ? "rgba(251, 113, 133, 0.35)" : "rgba(225, 29, 72, 0.25)",
-      gradient: "linear-gradient(135deg, #e60012 0%, #ff3b30 100%)",
+      color: isDark ? "#fca5a5" : "#dc2626",
+      bgColor: isDark ? "rgba(252, 165, 165, 0.08)" : "rgba(220, 38, 38, 0.06)",
+      borderColor: isDark ? "rgba(252, 165, 165, 0.18)" : "rgba(220, 38, 38, 0.12)",
+      gradient: "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
     };
   }
 
@@ -161,9 +161,9 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("gog")) {
     return {
       label: "GOG Galaxy",
-      color: isDark ? "#e879f9" : "#c026d3",
-      bgColor: isDark ? "rgba(232, 121, 249, 0.15)" : "rgba(192, 38, 211, 0.1)",
-      borderColor: isDark ? "rgba(232, 121, 249, 0.35)" : "rgba(192, 38, 211, 0.25)",
+      color: isDark ? "#f0abfc" : "#c026d3",
+      bgColor: isDark ? "rgba(240, 171, 252, 0.08)" : "rgba(192, 38, 211, 0.06)",
+      borderColor: isDark ? "rgba(240, 171, 252, 0.18)" : "rgba(192, 38, 211, 0.12)",
     };
   }
 
@@ -171,17 +171,17 @@ export function getPlatformStyle(platform: string, isDark: boolean): PlatformSty
   if (normalized.includes("pc") || normalized.includes("windows")) {
     return {
       label: "PC",
-      color: isDark ? "#38bdf8" : "#0284c7",
-      bgColor: isDark ? "rgba(56, 189, 248, 0.15)" : "rgba(2, 132, 199, 0.1)",
-      borderColor: isDark ? "rgba(56, 189, 248, 0.35)" : "rgba(2, 132, 199, 0.25)",
+      color: isDark ? "#cbd5e1" : "#475569",
+      bgColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
+      borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
     };
   }
 
   return {
     label: platform,
-    color: isDark ? "#c084fc" : "#9333ea",
-    bgColor: isDark ? "rgba(192, 132, 252, 0.15)" : "rgba(147, 51, 234, 0.1)",
-    borderColor: isDark ? "rgba(192, 132, 252, 0.35)" : "rgba(147, 51, 234, 0.25)",
+    color: isDark ? "#a1a1aa" : "#64748b",
+    bgColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
   };
 }
 

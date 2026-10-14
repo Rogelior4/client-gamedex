@@ -4,14 +4,11 @@ import {
   Box,
   CircularProgress,
   Typography,
-  Fab,
   ThemeProvider,
   CssBaseline,
   Snackbar,
   Alert,
-  Tooltip,
 } from '@mui/material';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 import { Navbar } from './components/layout/Navbar';
 import { HeroStats } from './components/games/HeroStats';
@@ -157,56 +154,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
 
-        {/* Ambient Top Glow Lights */}
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '90vw',
-            height: '420px',
-            background: isDark
-              ? 'radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.22) 0%, rgba(6, 182, 212, 0.1) 40%, transparent 75%)'
-              : 'radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.05) 40%, transparent 75%)',
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
 
-        {/* Subtle Side Aurora Lights */}
-        <Box
-          className="aurora-beam"
-          sx={{
-            position: 'fixed',
-            top: '25%',
-            left: '-10%',
-            width: '450px',
-            height: '450px',
-            borderRadius: '50%',
-            background: isDark
-              ? 'radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%)',
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
-        <Box
-          className="aurora-beam"
-          sx={{
-            position: 'fixed',
-            bottom: '15%',
-            right: '-10%',
-            width: '500px',
-            height: '500px',
-            borderRadius: '50%',
-            background: isDark
-              ? 'radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(6, 182, 212, 0.04) 0%, transparent 70%)',
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
 
         {/* Floating Capsule Navigation Bar */}
         <Navbar
@@ -260,31 +208,7 @@ function App() {
             />
           )}
 
-          {/* Floating Action Button (FAB) */}
-          <Tooltip title="Añadir nuevo videojuego (/ o botón)" arrow placement="left">
-            <Fab
-              color="primary"
-              onClick={() => setOpenAddDialog(true)}
-              sx={{
-                position: 'fixed',
-                bottom: 36,
-                right: 36,
-                width: 62,
-                height: 62,
-                background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
-                boxShadow: '0 12px 32px rgba(99, 102, 241, 0.55)',
-                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #4f46e5 0%, #0891b2 100%)',
-                  boxShadow: '0 16px 40px rgba(99, 102, 241, 0.75)',
-                  transform: 'scale(1.08) rotate(90deg)',
-                },
-                zIndex: 1000,
-              }}
-            >
-              <AddRoundedIcon sx={{ fontSize: 30 }} />
-            </Fab>
-          </Tooltip>
+
 
           {/* Dialogs & Modals */}
           <AddGameDialog

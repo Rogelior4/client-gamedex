@@ -114,16 +114,17 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           onClick={onOpenAddGame}
           startIcon={<AddRoundedIcon />}
           sx={{
-            borderRadius: '14px',
-            px: 4,
-            py: 1.4,
-            fontWeight: 800,
-            fontSize: '0.92rem',
-            background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
-            boxShadow: '0 8px 25px rgba(99, 102, 241, 0.45)',
+            borderRadius: '12px',
+            px: 3.5,
+            py: 1.2,
+            fontWeight: 700,
+            fontSize: '0.9rem',
+            bgcolor: isDark ? '#ffffff' : '#0f172a',
+            color: isDark ? '#090a0f' : '#ffffff',
+            boxShadow: isDark ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(15,23,42,0.15)',
             '&:hover': {
-              background: 'linear-gradient(135deg, #4f46e5 0%, #0891b2 100%)',
-              transform: 'translateY(-2px)',
+              bgcolor: isDark ? '#e4e4e7' : '#1e293b',
+              transform: 'translateY(-1px)',
             },
           }}
         >

@@ -148,18 +148,19 @@ export const BackupDialog: React.FC<BackupDialogProps> = ({
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1, pt: 2 }}>
         <Box
           sx={{
-            width: 44,
-            height: 44,
-            borderRadius: '14px',
-            background: 'linear-gradient(135deg, #6366f1 0%, #38bdf8 100%)',
+            width: 38,
+            height: 38,
+            borderRadius: '10px',
+            bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : '#0f172a',
+            border: '1px solid',
+            borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'white',
-            boxShadow: '0 4px 14px rgba(99, 102, 241, 0.4)',
+            color: isDark ? '#f4f4f5' : '#ffffff',
           }}
         >
-          <CloudSyncRoundedIcon sx={{ fontSize: 26 }} />
+          <CloudSyncRoundedIcon sx={{ fontSize: 22 }} />
         </Box>
         <Box>
           <Typography variant="h6" fontWeight="800" sx={{ lineHeight: 1.2 }}>
@@ -219,14 +220,15 @@ export const BackupDialog: React.FC<BackupDialogProps> = ({
                 disabled={games.length === 0}
                 startIcon={<DataObjectRoundedIcon />}
                 sx={{
-                  py: 1.5,
-                  borderRadius: '14px',
+                  py: 1.3,
+                  borderRadius: '10px',
                   fontWeight: 700,
-                  background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                  boxShadow: '0 4px 15px rgba(99, 102, 241, 0.35)',
+                  bgcolor: isDark ? '#ffffff' : '#0f172a',
+                  color: isDark ? '#090a0f' : '#ffffff',
+                  boxShadow: 'none',
                   textTransform: 'none',
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
+                    bgcolor: isDark ? '#e4e4e7' : '#1e293b',
                   },
                 }}
               >

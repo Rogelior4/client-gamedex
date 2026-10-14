@@ -294,15 +294,16 @@ export default function AddGameDialog({
       <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1.5, pb: 1, pt: 2 }}>
         <Box
           sx={{
-            width: 42,
-            height: 42,
-            borderRadius: "12px",
-            background: "linear-gradient(135deg, #6366f1 0%, #38bdf8 100%)",
+            width: 38,
+            height: 38,
+            borderRadius: "10px",
+            bgcolor: isDark ? "rgba(255, 255, 255, 0.08)" : "#0f172a",
+            border: "1px solid",
+            borderColor: isDark ? "rgba(255, 255, 255, 0.12)" : "transparent",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "white",
-            boxShadow: "0 4px 14px rgba(99, 102, 241, 0.4)",
+            color: isDark ? "#f4f4f5" : "#ffffff",
           }}
         >
           <SportsEsportsRoundedIcon />
@@ -782,19 +783,20 @@ export default function AddGameDialog({
           disabled={!(title.trim() || inputValue.trim())}
           startIcon={<AddRoundedIcon />}
           sx={{
-            borderRadius: "12px",
-            px: 3,
-            py: 1,
+            borderRadius: "10px",
+            px: 2.5,
+            py: 0.9,
             fontWeight: "700",
             textTransform: "none",
-            background: "linear-gradient(135deg, #6366f1 0%, #38bdf8 100%)",
-            boxShadow: "0 4px 15px rgba(99, 102, 241, 0.4)",
+            bgcolor: isDark ? "#ffffff" : "#0f172a",
+            color: isDark ? "#090a0f" : "#ffffff",
+            boxShadow: "none",
             "&:hover": {
-              background: "linear-gradient(135deg, #4f46e5 0%, #0284c7 100%)",
-              boxShadow: "0 6px 20px rgba(99, 102, 241, 0.6)",
+              bgcolor: isDark ? "#e4e4e7" : "#1e293b",
             },
             "&:disabled": {
-              background: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+              bgcolor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
+              color: isDark ? "#71717a" : "#94a3b8",
             },
           }}
         >

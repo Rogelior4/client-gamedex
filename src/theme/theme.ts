@@ -5,26 +5,26 @@ export const getAppTheme = (mode: 'light' | 'dark'): Theme =>
     palette: {
       mode,
       primary: {
-        main: mode === 'light' ? '#4f46e5' : '#6366f1',
-        light: mode === 'light' ? '#6366f1' : '#818cf8',
-        dark: mode === 'light' ? '#3730a3' : '#4f46e5',
-        contrastText: '#ffffff',
+        main: mode === 'light' ? '#0f172a' : '#f8fafc',
+        light: mode === 'light' ? '#334155' : '#ffffff',
+        dark: mode === 'light' ? '#020617' : '#e2e8f0',
+        contrastText: mode === 'light' ? '#ffffff' : '#090a0f',
       },
       secondary: {
-        main: mode === 'light' ? '#0284c7' : '#06b6d4',
-        light: '#38bdf8',
-        dark: '#0369a1',
+        main: mode === 'light' ? '#475569' : '#94a3b8',
+        light: mode === 'light' ? '#64748b' : '#cbd5e1',
+        dark: mode === 'light' ? '#334155' : '#64748b',
         contrastText: '#ffffff',
       },
       background: {
-        default: mode === 'light' ? '#f8fafc' : '#07090e',
-        paper: mode === 'light' ? '#ffffff' : '#0e121d',
+        default: mode === 'light' ? '#f8fafc' : '#0a0b0f',
+        paper: mode === 'light' ? '#ffffff' : '#13151c',
       },
       text: {
-        primary: mode === 'light' ? '#0f172a' : '#f8fafc',
-        secondary: mode === 'light' ? '#64748b' : '#94a3b8',
+        primary: mode === 'light' ? '#0f172a' : '#f4f4f5',
+        secondary: mode === 'light' ? '#64748b' : '#8e8e93',
       },
-      divider: mode === 'light' ? 'rgba(0, 0, 0, 0.07)' : 'rgba(255, 255, 255, 0.08)',
+      divider: mode === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)',
     },
     typography: {
       fontFamily: '"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',

@@ -5,7 +5,6 @@ import {
   Toolbar,
   Box,
   Typography,
-  Chip,
   TextField,
   InputAdornment,
   IconButton,
@@ -85,71 +84,38 @@ export const Navbar: React.FC<NavbarProps> = ({
               sx={{
                 cursor: 'pointer',
                 userSelect: 'none',
-                transition: 'transform 0.2s ease',
-                '&:hover': { transform: 'scale(1.02)' },
+                transition: 'opacity 0.2s ease',
+                '&:hover': { opacity: 0.9 },
               }}
             >
               <Box
                 sx={{
-                  width: 42,
-                  height: 42,
-                  borderRadius: '13px',
-                  background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
+                  width: 38,
+                  height: 38,
+                  borderRadius: '10px',
+                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : '#0f172a',
+                  border: '1px solid',
+                  borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'white',
-                  boxShadow: '0 8px 20px rgba(99, 102, 241, 0.45)',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%)',
-                  },
+                  color: isDark ? '#f4f4f5' : '#ffffff',
                 }}
               >
-                <SportsEsportsRoundedIcon sx={{ fontSize: 24, zIndex: 1 }} />
+                <SportsEsportsRoundedIcon sx={{ fontSize: 22 }} />
               </Box>
 
-              <Box>
-                <Box display="flex" alignItems="center" gap={1}>
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      fontWeight: 900,
-                      letterSpacing: '-0.03em',
-                      fontFamily: '"Outfit", sans-serif',
-                      background: isDark
-                        ? 'linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%)'
-                        : 'linear-gradient(135deg, #0f172a 0%, #334155 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
-                    GameDex
-                  </Typography>
-                  <Chip
-                    label="PRO VAULT"
-                    size="small"
-                    sx={{
-                      height: 19,
-                      fontSize: '0.62rem',
-                      fontWeight: 800,
-                      letterSpacing: '0.08em',
-                      bgcolor: isDark ? 'rgba(99, 102, 241, 0.15)' : 'rgba(99, 102, 241, 0.1)',
-                      color: isDark ? '#818cf8' : '#4f46e5',
-                      border: '1px solid',
-                      borderColor: isDark ? 'rgba(99, 102, 241, 0.3)' : 'rgba(99, 102, 241, 0.2)',
-                      borderRadius: '6px',
-                    }}
-                  />
-                </Box>
-              </Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 800,
+                  letterSpacing: '-0.02em',
+                  fontFamily: '"Outfit", sans-serif',
+                  color: isDark ? '#f4f4f5' : '#0f172a',
+                }}
+              >
+                GameDex
+              </Typography>
             </Box>
 
             <Box sx={{ flexGrow: 1 }} />
@@ -162,18 +128,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 bgcolor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)',
                 border: '1px solid',
                 borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.07)',
-                borderRadius: '16px',
-                px: 2,
-                py: 0.6,
-                width: { md: 360, lg: 420 },
-                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                borderRadius: '12px',
+                px: 1.8,
+                py: 0.5,
+                width: { md: 340, lg: 400 },
+                transition: 'all 0.2s ease',
                 '&:focus-within': {
-                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(255, 255, 255, 1)',
-                  borderColor: 'primary.main',
+                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 1)',
+                  borderColor: isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.25)',
                   boxShadow: isDark
-                    ? '0 0 0 3px rgba(99, 102, 241, 0.25), 0 10px 25px -5px rgba(0,0,0,0.4)'
-                    : '0 0 0 3px rgba(99, 102, 241, 0.15), 0 10px 25px -5px rgba(0,0,0,0.1)',
-                  width: { md: 400, lg: 480 },
+                    ? '0 4px 16px rgba(0,0,0,0.4)'
+                    : '0 4px 16px rgba(0,0,0,0.06)',
+                  width: { md: 380, lg: 440 },
                 },
               }}
             >
@@ -188,7 +154,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   disableUnderline: true,
                   startAdornment: (
                     <InputAdornment position="start">
-                      <SearchRoundedIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
+                      <SearchRoundedIcon sx={{ color: 'text.secondary', fontSize: 19 }} />
                     </InputAdornment>
                   ),
                   endAdornment: searchTerm ? (
@@ -201,14 +167,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <InputAdornment position="end">
                       <Box
                         sx={{
-                          px: 0.8,
-                          py: 0.2,
-                          borderRadius: '6px',
+                          px: 0.7,
+                          py: 0.15,
+                          borderRadius: '5px',
                           bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
                           border: '1px solid',
-                          borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
+                          borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
                           color: 'text.secondary',
-                          fontSize: '0.65rem',
+                          fontSize: '0.64rem',
                           fontWeight: 700,
                           lineHeight: 1,
                         }}
@@ -222,32 +188,32 @@ export const Navbar: React.FC<NavbarProps> = ({
             </Box>
 
             {/* Header Right Actions */}
-            <Box display="flex" alignItems="center" gap={1.2}>
+            <Box display="flex" alignItems="center" gap={1}>
               {/* Sync Covers from Multi-Store */}
-              <Tooltip title="Sincronizar carátulas multitienda (Steam, Epic, Nintendo, etc.)" arrow>
+              <Tooltip title="Sincronizar carátulas multitienda" arrow>
                 <span>
                   <IconButton
                     onClick={onSyncCovers}
                     disabled={isSyncing}
                     sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: '13px',
+                      width: 38,
+                      height: 38,
+                      borderRadius: '10px',
                       bgcolor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)',
                       border: '1px solid',
-                      borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.07)',
-                      color: isDark ? '#38bdf8' : '#0284c7',
-                      transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                      borderColor: isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(0, 0, 0, 0.06)',
+                      color: isDark ? '#a1a1aa' : '#64748b',
+                      transition: 'all 0.18s ease',
                       '&:hover': {
-                        bgcolor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(2, 132, 199, 0.1)',
-                        borderColor: '#38bdf8',
-                        transform: 'translateY(-1px)',
+                        color: isDark ? '#ffffff' : '#0f172a',
+                        bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
+                        borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.12)',
                       },
                     }}
                   >
                     <SyncRoundedIcon
                       sx={{
-                        fontSize: 20,
+                        fontSize: 19,
                         animation: isSyncing ? 'spin 1s linear infinite' : 'none',
                         '@keyframes spin': {
                           '0%': { transform: 'rotate(0deg)' },
@@ -264,22 +230,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <IconButton
                   onClick={onOpenBackup}
                   sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: '13px',
+                    width: 38,
+                    height: 38,
+                    borderRadius: '10px',
                     bgcolor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)',
                     border: '1px solid',
-                    borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.07)',
-                    color: isDark ? '#818cf8' : '#4f46e5',
-                    transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                    borderColor: isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(0, 0, 0, 0.06)',
+                    color: isDark ? '#a1a1aa' : '#64748b',
+                    transition: 'all 0.18s ease',
                     '&:hover': {
-                      bgcolor: isDark ? 'rgba(99, 102, 241, 0.15)' : 'rgba(79, 70, 229, 0.1)',
-                      borderColor: '#818cf8',
-                      transform: 'translateY(-1px)',
+                      color: isDark ? '#ffffff' : '#0f172a',
+                      bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
+                      borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.12)',
                     },
                   }}
                 >
-                  <CloudSyncRoundedIcon sx={{ fontSize: 20 }} />
+                  <CloudSyncRoundedIcon sx={{ fontSize: 19 }} />
                 </IconButton>
               </Tooltip>
 
@@ -287,24 +253,23 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Button
                 variant="contained"
                 onClick={onOpenAddGame}
-                startIcon={<AddRoundedIcon sx={{ fontSize: 20 }} />}
+                startIcon={<AddRoundedIcon sx={{ fontSize: 19 }} />}
                 sx={{
                   display: { xs: 'none', sm: 'inline-flex' },
-                  background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
-                  boxShadow: '0 8px 24px rgba(99, 102, 241, 0.4)',
-                  borderRadius: '14px',
-                  px: 2.5,
-                  py: 1,
+                  bgcolor: isDark ? '#ffffff' : '#0f172a',
+                  color: isDark ? '#090a0f' : '#ffffff',
+                  boxShadow: isDark ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(15,23,42,0.15)',
+                  borderRadius: '10px',
+                  px: 2.2,
+                  py: 0.85,
                   fontWeight: 700,
-                  fontSize: '0.88rem',
-                  letterSpacing: '0.01em',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                  fontSize: '0.86rem',
+                  letterSpacing: '-0.01em',
+                  transition: 'all 0.18s ease',
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #0891b2 100%)',
-                    boxShadow: '0 12px 28px rgba(99, 102, 241, 0.6)',
-                    transform: 'translateY(-2px)',
+                    bgcolor: isDark ? '#e4e4e7' : '#1e293b',
+                    boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.4)' : '0 4px 12px rgba(15,23,42,0.25)',
+                    transform: 'translateY(-1px)',
                   },
                 }}
               >

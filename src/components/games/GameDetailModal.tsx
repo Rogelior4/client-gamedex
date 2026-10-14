@@ -45,6 +45,14 @@ export const GameDetailModal: React.FC<GameDetailModalProps> = ({
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
 
+  const [coverUrl, setCoverUrl] = React.useState<string | null>(game?.coverUrl || null);
+  const [imgError, setImgError] = React.useState(false);
+
+  React.useEffect(() => {
+    setCoverUrl(game?.coverUrl || null);
+    setImgError(false);
+  }, [game?.coverUrl, game?.id]);
+
   if (!game) return null;
 
   const platformStyle = getPlatformStyle(game.platform, isDark);
@@ -85,11 +93,16 @@ export const GameDetailModal: React.FC<GameDetailModalProps> = ({
           left: 0,
           right: 0,
           height: 240,
-          backgroundImage: game.coverUrl ? `url(${game.coverUrl})` : 'none',
+          backgroundImage: !imgError && coverUrl ? `url(${coverUrl})` : 'none',
+          background: !imgError && coverUrl
+            ? undefined
+            : isDark
+            ? `radial-gradient(ellipse at top left, ${platformStyle.color}25 0%, rgba(11, 15, 25, 0) 70%)`
+            : `radial-gradient(ellipse at top left, ${platformStyle.color}15 0%, rgba(255, 255, 255, 0) 70%)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          filter: 'blur(28px) brightness(0.4)',
-          transform: 'scale(1.2)',
+          filter: !imgError && coverUrl ? 'blur(28px) brightness(0.4)' : undefined,
+          transform: !imgError && coverUrl ? 'scale(1.2)' : undefined,
           opacity: 0.6,
           pointerEvents: 'none',
           zIndex: 0,
@@ -143,10 +156,17 @@ export const GameDetailModal: React.FC<GameDetailModalProps> = ({
               position: 'relative',
             }}
           >
-            {game.coverUrl ? (
+            {!imgError && coverUrl ? (
               <img
-                src={game.coverUrl}
+                src={coverUrl}
                 alt={game.title}
+                onError={() => {
+                  if (coverUrl && coverUrl.includes('library_600x900.jpg')) {
+                    setCoverUrl(coverUrl.replace('library_600x900.jpg', 'header.jpg'));
+                  } else {
+                    setImgError(true);
+                  }
+                }}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -166,13 +186,50 @@ export const GameDetailModal: React.FC<GameDetailModalProps> = ({
                   background: isDark
                     ? 'linear-gradient(135deg, #1e1b4b 0%, #080c16 100%)'
                     : 'linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%)',
-                  p: 2,
+                  p: 2.5,
                   textAlign: 'center',
                 }}
               >
-                <SportsEsportsRoundedIcon sx={{ fontSize: 48, color: 'primary.main', mb: 1 }} />
-                <Typography variant="body2" fontWeight="800">
+                <Box
+                  sx={{
+                    width: 58,
+                    height: 58,
+                    borderRadius: '18px',
+                    bgcolor: isDark ? 'rgba(99, 102, 241, 0.18)' : 'rgba(99, 102, 241, 0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'primary.main',
+                    mb: 1.5,
+                    boxShadow: '0 8px 20px rgba(99, 102, 241, 0.25)',
+                  }}
+                >
+                  <SportsEsportsRoundedIcon sx={{ fontSize: 32 }} />
+                </Box>
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="800"
+                  sx={{
+                    color: isDark ? '#f8fafc' : '#1e293b',
+                    lineHeight: 1.25,
+                    fontSize: '0.92rem',
+                    fontFamily: '"Outfit", sans-serif',
+                  }}
+                >
                   {game.title}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  fontWeight="800"
+                  sx={{
+                    color: platformStyle.color,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    mt: 0.8,
+                    fontSize: '0.68rem',
+                  }}
+                >
+                  {game.platform}
                 </Typography>
               </Box>
             )}
@@ -352,12 +409,13 @@ export const GameDetailModal: React.FC<GameDetailModalProps> = ({
                 }}
                 startIcon={<EditRoundedIcon />}
                 sx={{
-                  borderRadius: '12px',
+                  borderRadius: '10px',
                   fontWeight: 700,
-                  background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
-                  boxShadow: '0 6px 18px rgba(99, 102, 241, 0.35)',
+                  bgcolor: isDark ? '#ffffff' : '#0f172a',
+                  color: isDark ? '#090a0f' : '#ffffff',
+                  boxShadow: 'none',
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #0891b2 100%)',
+                    bgcolor: isDark ? '#e4e4e7' : '#1e293b',
                   },
                 }}
               >
