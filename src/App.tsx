@@ -18,6 +18,7 @@ import AddGameDialog from './components/games/AddGameDialog';
 import EditGameDialog from './components/games/EditGameDialog';
 import { DeleteGameDialog } from './components/games/DeleteGameDialog';
 import { BackupDialog } from './components/games/BackupDialog';
+import { SteamSyncDialog } from './components/games/SteamSyncDialog';
 import { GameDetailModal } from './components/games/GameDetailModal';
 
 import { ThemeContext } from './theme/ThemeContext';
@@ -36,6 +37,7 @@ function App() {
     snackbar,
     stats,
     closeSnackbar,
+    loadGames,
     handleAddGame,
     handleUpdateGame,
     handleDeleteGame,
@@ -47,6 +49,7 @@ function App() {
   // Local UI filters and dialogs
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openBackupDialog, setOpenBackupDialog] = useState(false);
+  const [openSteamSyncDialog, setOpenSteamSyncDialog] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [deletingGame, setDeletingGame] = useState<Game | null>(null);
   const [viewingGame, setViewingGame] = useState<Game | null>(null);
@@ -172,6 +175,7 @@ function App() {
             onSyncCovers={handleSyncCovers}
             onOpenAddGame={() => setOpenAddDialog(true)}
             onOpenBackup={() => setOpenBackupDialog(true)}
+            onOpenSteamSync={() => setOpenSteamSyncDialog(true)}
             isDark={isDark}
           />
 
@@ -242,6 +246,12 @@ function App() {
             games={games}
             onClose={() => setOpenBackupDialog(false)}
             onImport={handleImportGames}
+          />
+
+          <SteamSyncDialog
+            open={openSteamSyncDialog}
+            onClose={() => setOpenSteamSyncDialog(false)}
+            onSuccess={loadGames}
           />
 
           {/* Game Detail Showcase Modal */}

@@ -27,8 +27,19 @@ interface NavbarProps {
   onSyncCovers: () => void;
   onOpenAddGame: () => void;
   onOpenBackup: () => void;
+  onOpenSteamSync?: () => void;
   isDark: boolean;
 }
+
+const SteamIcon: React.FC<{ sx?: any }> = ({ sx }) => (
+  <Box
+    component="svg"
+    viewBox="0 0 24 24"
+    sx={{ width: 18, height: 18, fill: 'currentColor', ...sx }}
+  >
+    <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.029 4.524 4.524s-2.03 4.524-4.524 4.524h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 14.87C1.815 20.084 6.559 24 12.02 24c6.627 0 12-5.373 12-12S18.605 0 11.979 0zM7.54 18.217l-1.473-.61c.262.543.743.963 1.344 1.146.91.276 1.87-.247 2.146-1.157.14-.459.088-.934-.112-1.332-.201-.399-.548-.701-.977-.832l1.503.621c-.42.986-1.445 1.554-2.431 1.164zm8.4-7.464c-1.391 0-2.523-1.133-2.523-2.524 0-1.392 1.132-2.524 2.523-2.524 1.392 0 2.524 1.132 2.524 2.524 0 1.391-1.132 2.524-2.524 2.524z" />
+  </Box>
+);
 
 export const Navbar: React.FC<NavbarProps> = ({
   searchTerm,
@@ -38,6 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSyncCovers,
   onOpenAddGame,
   onOpenBackup,
+  onOpenSteamSync,
   isDark,
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -225,6 +237,32 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </IconButton>
                 </span>
               </Tooltip>
+
+              {/* Steam Account Sync */}
+              {onOpenSteamSync && (
+                <Tooltip title="Sincronizar cuenta de Steam" arrow>
+                  <IconButton
+                    onClick={onOpenSteamSync}
+                    sx={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: '10px',
+                      bgcolor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)',
+                      border: '1px solid',
+                      borderColor: isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(0, 0, 0, 0.06)',
+                      color: isDark ? '#a1a1aa' : '#64748b',
+                      transition: 'all 0.18s ease',
+                      '&:hover': {
+                        color: isDark ? '#ffffff' : '#0f172a',
+                        bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
+                        borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.12)',
+                      },
+                    }}
+                  >
+                    <SteamIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
 
               {/* Backup & Restore */}
               <Tooltip title="Copia de seguridad y exportar/importar" arrow>

@@ -6,6 +6,9 @@ import {
   UpdateGameData,
   SteamSuggestion,
   GameSuggestion,
+  SteamProfileSummary,
+  SteamOwnedGame,
+  SteamImportResult,
 } from "../types/game.types";
 
 export type {
@@ -15,6 +18,9 @@ export type {
   UpdateGameData,
   SteamSuggestion,
   GameSuggestion,
+  SteamProfileSummary,
+  SteamOwnedGame,
+  SteamImportResult,
 };
 
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
@@ -191,3 +197,60 @@ export const exportCollectionCSV = (games: Game[]) => {
   link.click();
   URL.revokeObjectURL(url);
 };
+
+/**
+ * Consulta y resuelve el perfil público de Steam
+ */
+export const getSteamProfile = async (
+  identifier: string,
+  apiKey?: string,
+): Promise<SteamProfileSummary> => {
+  const { data } = await api.get<SteamProfileSummary>("/games/steam/profile", {
+    params: {
+      identifier: identifier.trim(),
+      ...(apiKey?.trim() ? { apiKey: apiKey.trim() } : {}),
+    },
+  });
+  return data;
+};
+
+/**
+ * Obtiene la lista completa de videojuegos de la cuenta de Steam
+ */
+export const getSteamOwnedGames = async (
+  steamId: string,
+  apiKey?: string,
+): Promise<{ totalCount: number; isPublic: boolean; games: SteamOwnedGame[] }> => {
+  const { data } = await api.get<{
+    totalCount: number;
+    isPublic: boolean;
+    games: SteamOwnedGame[];
+  }>("/games/steam/owned-games", {
+    params: {
+      steamId: steamId.trim(),
+      ...(apiKey?.trim() ? { apiKey: apiKey.trim() } : {}),
+    },
+  });
+  return data;
+};
+
+/**
+ * Importa títulos seleccionados de Steam a la base de datos de GameDex
+ */
+export const importSteamGames = async (
+  games: Array<{
+    title: string;
+    appId?: number;
+    coverUrl?: string | null;
+    hoursPlayed?: number | null;
+    status?: GameStatus;
+  }>,
+  updateExistingHours = true,
+): Promise<SteamImportResult> => {
+  const { data } = await api.post<SteamImportResult>("/games/steam/import", {
+    games,
+    updateExistingHours,
+  });
+  return data;
+};
+

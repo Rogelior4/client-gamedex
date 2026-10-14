@@ -90,3 +90,30 @@ export interface GameSuggestion {
 
 // Backwards-compatible alias for existing imports
 export type SteamSuggestion = GameSuggestion;
+
+export interface SteamProfileSummary {
+  steamId: string;
+  personaName: string;
+  avatar: string;
+  profileUrl: string;
+  isPublic: boolean;
+}
+
+export interface SteamOwnedGame {
+  appId: number;
+  title: string;
+  platform: string;
+  coverUrl: string;
+  headerUrl: string;
+  hoursPlayed: number;
+  playtimeMinutes: number;
+  rtimeLastPlayed: number;
+  suggestedStatus: GameStatus;
+}
+
+export interface SteamImportResult {
+  imported: number;
+  updated: number;
+  skipped: number;
+  total: number;
+}
